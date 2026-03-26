@@ -377,7 +377,7 @@ html = """<!DOCTYPE html>
           headers: { 'Accept': 'application/vnd.github.v3+json' }
         });
         const meta = await resp.json();
-        const data = JSON.parse(atob(meta.content.replace(/\n/g, '')));
+        const data = JSON.parse(atob(meta.content.replace(/\\n/g, '')));
         favMap = {};
         data.forEach(s => { if (s.uid) favMap[s.uid] = s; });
         refreshCardButtons();
