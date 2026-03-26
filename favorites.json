@@ -1,5 +1,24 @@
 [
   {
+    "uid": "2054685146",
+    "score": 100.5,
+    "days": 1,
+    "price": 2050,
+    "address": "722 Palmetto Ave #A",
+    "price_str": "$2,050/mo",
+    "beds": 1,
+    "baths": 1,
+    "sqft_str": "",
+    "days_text": "Yesterday",
+    "days_cls": "yesterday",
+    "parking_listing": "",
+    "parking_context": "Lake Merced/Lakeshore — good street parking; low-density residential.",
+    "laundry": "The unit includes convenient in-house laundry facilities, ensuring your comfort and convenience.",
+    "zillow_url": "https://www.zillow.com/homedetails/722-Palmetto-Ave-A-San-Francisco-CA-94132/2054685146_zpid/",
+    "maps_url": "https://www.google.com/maps/search/?api=1&query=722+Palmetto+Ave+%23A%2C+San+Francisco%2C+CA",
+    "saved": false
+  },
+  {
     "uid": "2094778349",
     "score": 9869.95,
     "days": 0,
