@@ -22,7 +22,7 @@
     .sort-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
     .container { max-width: 860px; margin: 1.25rem auto; padding: 0 1rem; }
     .section-header { font-size: 0.85rem; color: #888; margin-bottom: 0.85rem; }
-    .card { background: white; border-radius: 10px; padding: 1.1rem 1.4rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.07); position: relative; }
+    .card { background: white; border-radius: 10px; padding: 1.1rem 1.4rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
     .address { font-weight: 600; font-size: 0.97rem; padding-right: 2rem; }
     .meta { font-size: 0.82rem; color: #777; margin-top: 0.2rem; }
@@ -42,7 +42,7 @@
     .btn-zillow { background: #1a1a2e; color: white; }
     .btn-maps { background: #fff; color: #374151; border: 1px solid #d1d5db; }
     .btn:hover { opacity: 0.82; }
-    .fav-btn { position: absolute; top: 0.9rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.3rem; line-height: 1; padding: 0.1rem; color: #d1d5db; transition: color .15s, transform .1s; }
+    .fav-btn { background: none; border: none; cursor: pointer; font-size: 1.3rem; line-height: 1; padding: 0.1rem; color: #d1d5db; transition: color .15s, transform .1s; margin-left: auto; }
     .fav-btn:hover { transform: scale(1.2); }
     .fav-btn.saved { color: #f59e0b; }
     .empty { text-align: center; padding: 2.5rem; color: #aaa; background: white; border-radius: 10px; font-size: 0.88rem; line-height: 1.6; }
@@ -62,7 +62,7 @@
   <header>
     <div>
       <h1>SF Rentals &mdash; Fresh Listings</h1>
-      <p>Updated: March 26, 2026 at 06:42 UTC</p>
+      <p>Updated: March 26, 2026 at 06:45 UTC</p>
     </div>
   </header>
   <div class="criteria">1 bed min &nbsp;&middot;&nbsp; $3,000&ndash;$4,000/mo &nbsp;&middot;&nbsp; Listed in last 24h &nbsp;&middot;&nbsp; Individual listings only &nbsp;&middot;&nbsp; No Nob Hill / Tenderloin / Mission / SOMA</div>
@@ -156,14 +156,13 @@
       const mBtn = `<a href="${esc(p.maps_url)}" target="_blank" class="btn btn-maps"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>Maps</a>`;
       const savedLabel = inSavedTab && !FRESH.find(f => f.uid === p.uid) ? '<span class="saved-badge">Saved</span>' : '';
       return `<div class="card" id="card-${esc(p.uid)}">
-  <button class="fav-btn ${favCls}" onclick="toggleFav('${esc(p.uid)}')" title="${favTitle}">&#9733;</button>
   <div class="card-top">
     <div><div class="address">${esc(p.address)}${savedLabel}</div><div class="meta">${esc(String(p.beds))} bed &middot; ${esc(String(p.baths))} bath${p.sqft_str}</div></div>
     <div class="right"><div class="price">${esc(p.price_str)}</div><span class="badge-age ${p.days_cls}">${esc(p.days_text)}</span></div>
   </div>
   <hr class="divider">
   ${pListing}${pCtx}${laundry}
-  <div class="actions">${zBtn}${mBtn}</div>
+  <div class="actions">${zBtn}${mBtn}<button class="fav-btn ${favCls}" onclick="toggleFav('${esc(p.uid)}')" title="${favTitle}">&#9733;</button></div>
 </div>`;
     }
 
