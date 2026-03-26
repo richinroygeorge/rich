@@ -68,20 +68,20 @@ jobs:
               for page in range(1, 9):
                   try:
                       resp = requests.get(
-                          "https://zillow-scraper-api.p.rapidapi.com/search",
+                          "https://zillow-scraper-api.p.rapidapi.com/zillow/search",
                           headers=HEADERS,
                           params={
                               "location": "San Francisco, CA",
-                              "status": "for_rent",
+                              "listing_type": "for_rent",
                               "beds_min": "1",
-                              "price_min": "3000",
-                              "price_max": "4000",
+                              "min_price": "3000",
+                              "max_price": "4000",
                               "page": str(page)
                           },
                           timeout=30
                       )
                       data = resp.json()
-                      listings = data.get("listings") or data.get("results") or []
+                      listings = data.get("data", {}).get("listings", [])
                       if not listings:
                           break
                       all_listings.extend(listings)
@@ -93,12 +93,12 @@ jobs:
           def get_property_details(zpid):
               try:
                   resp = requests.get(
-                      "https://zillow-scraper-api.p.rapidapi.com/property",
+                      f"https://zillow-scraper-api.p.rapidapi.com/zillow/property/{zpid}",
                       headers=HEADERS,
-                      params={"zpid": str(zpid)},
                       timeout=30
                   )
-                  return resp.json()
+                  data = resp.json()
+                  return data.get("data", data)
               except:
                   return {}
 
