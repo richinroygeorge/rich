@@ -370,7 +370,7 @@ html = """<!DOCTYPE html>
 
     function getToken() { return localStorage.getItem('gh_token'); }
 
-    // Load favorites via GitHub API (real-time, no CDN cache)
+    // Fetch favorites in background — cards render immediately, stars update after
     async function loadFavorites() {
       try {
         const resp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
@@ -380,11 +380,11 @@ html = """<!DOCTYPE html>
         const data = JSON.parse(atob(meta.content.replace(/\n/g, '')));
         favMap = {};
         data.forEach(s => { if (s.uid) favMap[s.uid] = s; });
+        refreshCardButtons();
+        updateSavedBadge();
       } catch(e) {
-        FRESH.forEach(c => { if (c.saved) favMap[c.uid] = c; });
+        // favorites unavailable — cards already shown, stars stay grey
       }
-      renderFresh('recent');
-      updateSavedBadge();
     }
 
     function showTab(tab, btn) {
@@ -554,7 +554,9 @@ html = """<!DOCTYPE html>
       setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    // Init — fetch live favorites then render
+    // Init — render cards immediately, then load favorites in background
+    renderFresh('recent');
+    updateSavedBadge();
     loadFavorites();
   </script>
 </body>
