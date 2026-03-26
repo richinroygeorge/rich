@@ -159,6 +159,14 @@ def build_card(p):
     sqft_str = f" &middot; {int(sqft):,} sqft" if isinstance(sqft, (int, float)) else ""
     days = p.get("days_on_zillow")
     days_text, days_cls = days_label(days)
+    if days == 0:
+        listed_text = "Listed today"
+    elif days == 1:
+        listed_text = "Listed yesterday"
+    elif days is not None:
+        listed_text = f"Listed {days} days ago"
+    else:
+        listed_text = ""
     detail_url = p.get("detail_url") or ""
     if detail_url and not detail_url.startswith("http"):
         detail_url = "https://www.zillow.com" + detail_url
@@ -179,6 +187,7 @@ def build_card(p):
         "parking_listing": p.get("_parking_text") or "",
         "parking_context": p.get("_parking_context") or "",
         "laundry": p.get("_laundry_text") or "",
+        "listed_text": listed_text,
         "zillow_url": detail_url,
         "maps_url": maps_url,
     }
@@ -207,7 +216,7 @@ for l in raw:
     if days is None or days > 1:
         continue
     price = l.get("price")
-    if price and price > 4000:
+    if price and (price < 3000 or price > 4000):
         continue
     if is_big_complex(l):
         continue
@@ -232,7 +241,7 @@ for l in candidates:
     zipcode = str(merged.get("zipcode") or "")
     merged["_parking_context"] = PARKING_CONTEXT.get(zipcode)
     price = merged.get("price")
-    if price and price > 4000:
+    if price and (price < 3000 or price > 4000):
         continue
     detailed.append(merged)
 
@@ -373,9 +382,10 @@ html = """<!DOCTYPE html>
     // Fetch favorites in background — cards render immediately, stars update after
     async function loadFavorites() {
       try {
-        const resp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
-          headers: { 'Accept': 'application/vnd.github.v3+json' }
-        });
+        const headers = { 'Accept': 'application/vnd.github.v3+json' };
+        const tok = getToken();
+        if (tok) headers['Authorization'] = `token ${tok}`;
+        const resp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, { headers });
         const meta = await resp.json();
         const data = JSON.parse(atob(meta.content.replace(/\\n/g, '')));
         favMap = {};
@@ -409,6 +419,9 @@ html = """<!DOCTYPE html>
       const isSaved = !!favMap[p.uid];
       const favCls = isSaved ? 'saved' : '';
       const favTitle = isSaved ? 'Remove from saved' : 'Save listing';
+      const listedRow = p.listed_text
+        ? `<div class="info-row"><span class="info-label">Listed</span><span class="info-text">${esc(p.listed_text)}</span></div>`
+        : '';
       const pListing = p.parking_listing
         ? `<div class="info-row"><span class="info-label">Parking</span><span class="info-text">${esc(p.parking_listing)}</span></div>`
         : `<div class="info-row"><span class="info-label">Parking</span><span class="info-text no-info">Not mentioned in listing</span></div>`;
@@ -429,7 +442,7 @@ html = """<!DOCTYPE html>
     <div class="right"><div class="price">${esc(p.price_str)}</div><span class="badge-age ${p.days_cls}">${esc(p.days_text)}</span></div>
   </div>
   <hr class="divider">
-  ${pListing}${pCtx}${laundry}
+  ${listedRow}${pListing}${pCtx}${laundry}
   <div class="actions">${zBtn}${mBtn}<button class="fav-btn ${favCls}" onclick="toggleFav('${esc(p.uid)}')" title="${favTitle}">&#9733;</button></div>
 </div>`;
     }
@@ -465,22 +478,20 @@ html = """<!DOCTYPE html>
     function toggleFav(uid) {
       const card = FRESH.find(c => c.uid === uid) || favMap[uid];
       if (!card) return;
+      // Always require token for both add and remove
+      if (!getToken()) {
+        pendingFavUid = uid;
+        document.getElementById('tokenModal').classList.add('show');
+        return;
+      }
       if (favMap[uid]) {
-        // Remove
         delete favMap[uid];
-        persistFavorites();
       } else {
-        // Add — need token
-        if (!getToken()) {
-          pendingFavUid = uid;
-          document.getElementById('tokenModal').classList.add('show');
-          return;
-        }
         favMap[uid] = card;
-        persistFavorites();
       }
       refreshCardButtons();
       updateSavedBadge();
+      persistFavorites();
     }
 
     function refreshCardButtons() {
@@ -519,32 +530,41 @@ html = """<!DOCTYPE html>
       }
     }
 
+    let isSaving = false;
+    let savePending = false;
+
     async function persistFavorites() {
+      if (isSaving) { savePending = true; return; }
+      isSaving = true;
+      savePending = false;
       const token = getToken();
-      if (!token) return;
+      if (!token) { isSaving = false; return; }
       const favorites = Object.values(favMap);
       try {
-        // Get current SHA
-        const meta = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
-          headers: { 'Authorization': `token ${token}` }
+        const metaResp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
+          headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
         });
-        const metaJson = await meta.json();
+        const metaJson = await metaResp.json();
         const sha = metaJson.sha;
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(favorites, null, 2))));
+        const json = JSON.stringify(favorites, null, 2);
+        const bytes = new TextEncoder().encode(json);
+        const b64 = btoa(String.fromCharCode(...bytes));
         const res = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
           method: 'PUT',
           headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: 'Update favorites', content, sha })
+          body: JSON.stringify({ message: 'Update favorites', content: b64, sha })
         });
         if (res.ok) {
           showToast(favorites.length ? 'Saved!' : 'Removed from saved');
         } else {
           const err = await res.json();
-          showToast('Error: ' + (err.message || 'could not save'));
+          showToast('Error saving: ' + (err.message || res.status));
         }
       } catch(e) {
-        showToast('Network error saving favorites');
+        showToast('Network error — check your token');
       }
+      isSaving = false;
+      if (savePending) persistFavorites();
     }
 
     function showToast(msg) {
