@@ -62,7 +62,7 @@
   <header>
     <div>
       <h1>SF Rentals &mdash; Fresh Listings</h1>
-      <p>Updated: March 26, 2026 at 13:16 UTC</p>
+      <p>Updated: March 26, 2026 at 13:26 UTC</p>
     </div>
   </header>
   <div class="criteria">1 bed min &nbsp;&middot;&nbsp; $3,000&ndash;$4,000/mo &nbsp;&middot;&nbsp; Listed in last 24h &nbsp;&middot;&nbsp; Individual listings only &nbsp;&middot;&nbsp; No Nob Hill / Tenderloin / Mission / SOMA</div>
@@ -114,7 +114,7 @@
 
     function getToken() { return localStorage.getItem('gh_token'); }
 
-    // Load favorites via GitHub API (real-time, no CDN cache)
+    // Fetch favorites in background — cards render immediately, stars update after
     async function loadFavorites() {
       try {
         const resp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
@@ -125,11 +125,11 @@
 /g, '')));
         favMap = {};
         data.forEach(s => { if (s.uid) favMap[s.uid] = s; });
+        refreshCardButtons();
+        updateSavedBadge();
       } catch(e) {
-        FRESH.forEach(c => { if (c.saved) favMap[c.uid] = c; });
+        // favorites unavailable — cards already shown, stars stay grey
       }
-      renderFresh('recent');
-      updateSavedBadge();
     }
 
     function showTab(tab, btn) {
@@ -299,7 +299,9 @@
       setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    // Init — fetch live favorites then render
+    // Init — render cards immediately, then load favorites in background
+    renderFresh('recent');
+    updateSavedBadge();
     loadFavorites();
   </script>
 </body>
