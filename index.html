@@ -62,7 +62,7 @@
   <header>
     <div>
       <h1>SF Rentals &mdash; Fresh Listings</h1>
-      <p>Updated: March 26, 2026 at 06:50 UTC</p>
+      <p>Updated: March 26, 2026 at 06:57 UTC</p>
     </div>
   </header>
   <div class="criteria">1 bed min &nbsp;&middot;&nbsp; $3,000&ndash;$4,000/mo &nbsp;&middot;&nbsp; Listed in last 24h &nbsp;&middot;&nbsp; Individual listings only &nbsp;&middot;&nbsp; No Nob Hill / Tenderloin / Mission / SOMA</div>
@@ -92,8 +92,8 @@
 
   <div class="token-modal" id="tokenModal">
     <div class="token-box">
-      <h3>Enter your GitHub token to save</h3>
-      <p>Your token needs <code>repo</code> scope for <strong>richinroygeorge/rich</strong>. It's stored only in this browser session &mdash; never sent anywhere except GitHub.</p>
+      <h3>One-time setup: enter your GitHub token</h3>
+      <p>Needed to save favorites. Requires <code>repo</code> scope on <strong>richinroygeorge/rich</strong>. Stored in this browser only &mdash; you won't be asked again on this device.</p>
       <input type="password" id="tokenInput" placeholder="ghp_..." />
       <div class="token-box-btns">
         <button class="btn btn-maps" onclick="closeModal()">Cancel</button>
@@ -105,25 +105,27 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const FRESH = [{"uid": "2094778349", "score": 9869.95, "days": 0, "price": 3995, "address": "452 Oak St APT 5", "price_str": "$3,995/mo", "beds": 1, "baths": 1.0, "sqft_str": " &middot; 500 sqft", "days_text": "Today", "days_cls": "today", "parking_listing": "**Please note, there is only street parking available. **Street Parking Only**", "parking_context": "Civic Center area — very limited; high theft risk. Garage strongly recommended.", "laundry": "This recently renovated, light filled apartment has been freshly painted throughout, stylish, modern light fixtures, stainless steel appliances and includes brand new in-unit washer and dryer all just steps away from Hayes Valley's best shopping and dining. - Brand new in-unit washer and dryer", "zillow_url": "https://www.zillow.com/homedetails/452-Oak-St-APT-5-San-Francisco-CA-94102/2094778349_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=452+Oak+St+APT+5%2C+San+Francisco%2C+CA", "saved": true}, {"uid": "461274046", "score": 83.0, "days": 1, "price": 3300, "address": "720 41st Ave APT 4", "price_str": "$3,300/mo", "beds": 2, "baths": 1.0, "sqft_str": " &middot; 1,000 sqft", "days_text": "Yesterday", "days_cls": "yesterday", "parking_listing": "GARAGE SPACE INCLUDED", "parking_context": "Outer Richmond — good residential street parking; less congested than inner neighborhoods.", "laundry": "", "zillow_url": "https://www.zillow.com/homedetails/720-41st-Ave-APT-4-San-Francisco-CA-94121/461274046_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=720+41st+Ave+APT+4%2C+San+Francisco%2C+CA", "saved": false}, {"uid": "2054685146", "score": 100.5, "days": 1, "price": 2050, "address": "722 Palmetto Ave #A", "price_str": "$2,050/mo", "beds": 1, "baths": 1.0, "sqft_str": "", "days_text": "Yesterday", "days_cls": "yesterday", "parking_listing": "", "parking_context": "Lake Merced/Lakeshore — good street parking; low-density residential.", "laundry": "The unit includes convenient in-house laundry facilities, ensuring your comfort and convenience.", "zillow_url": "https://www.zillow.com/homedetails/722-Palmetto-Ave-A-San-Francisco-CA-94132/2054685146_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=722+Palmetto+Ave+%23A%2C+San+Francisco%2C+CA", "saved": false}, {"uid": "461289452", "score": 9857.95, "days": 0, "price": 2795, "address": "522 Geary St #403", "price_str": "$2,795/mo", "beds": 1, "baths": 1.0, "sqft_str": "", "days_text": "Today", "days_cls": "today", "parking_listing": "No parking", "parking_context": "Civic Center area — very limited; high theft risk. Garage strongly recommended.", "laundry": "This thoughtfully updated unit offers a smart and functional layout, featuring a defined sleeping area, modern finishes, and the convenience of in-unit laundry. In-unit laundry", "zillow_url": "https://www.zillow.com/homedetails/522-Geary-St-403-San-Francisco-CA-94102/461289452_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=522+Geary+St+%23403%2C+San+Francisco%2C+CA", "saved": false}, {"uid": "461287987", "score": 9866.5, "days": 0, "price": 3650, "address": "501 Douglass St APT 3", "price_str": "$3,650/mo", "beds": 1, "baths": 1.0, "sqft_str": " &middot; 600 sqft", "days_text": "Today", "days_cls": "today", "parking_listing": "Bike parking included Garage parking available for $250 per month", "parking_context": "Castro — moderate street parking; RPP Zone B. Side streets off Castro St tend to have more availability.", "laundry": "New eat-in kitchen with dishwasher Laundry facility in building", "zillow_url": "https://www.zillow.com/apartments/san-francisco-ca/501-douglass-st./5j4BvN/", "maps_url": "https://www.google.com/maps/search/?api=1&query=501+Douglass+St+APT+3%2C+San+Francisco%2C+CA", "saved": false}];
+    const FRESH = [{"uid": "2094778349", "score": 9869.95, "days": 0, "price": 3995, "address": "452 Oak St APT 5", "price_str": "$3,995/mo", "beds": 1, "baths": 1.0, "sqft_str": " &middot; 500 sqft", "days_text": "Today", "days_cls": "today", "parking_listing": "**Please note, there is only street parking available. **Street Parking Only**", "parking_context": "Civic Center area — very limited; high theft risk. Garage strongly recommended.", "laundry": "This recently renovated, light filled apartment has been freshly painted throughout, stylish, modern light fixtures, stainless steel appliances and includes brand new in-unit washer and dryer all just steps away from Hayes Valley's best shopping and dining. - Brand new in-unit washer and dryer", "zillow_url": "https://www.zillow.com/homedetails/452-Oak-St-APT-5-San-Francisco-CA-94102/2094778349_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=452+Oak+St+APT+5%2C+San+Francisco%2C+CA", "saved": false}, {"uid": "461274046", "score": 83.0, "days": 1, "price": 3300, "address": "720 41st Ave APT 4", "price_str": "$3,300/mo", "beds": 2, "baths": 1.0, "sqft_str": " &middot; 1,000 sqft", "days_text": "Yesterday", "days_cls": "yesterday", "parking_listing": "GARAGE SPACE INCLUDED", "parking_context": "Outer Richmond — good residential street parking; less congested than inner neighborhoods.", "laundry": "", "zillow_url": "https://www.zillow.com/homedetails/720-41st-Ave-APT-4-San-Francisco-CA-94121/461274046_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=720+41st+Ave+APT+4%2C+San+Francisco%2C+CA", "saved": false}, {"uid": "2054685146", "score": 100.5, "days": 1, "price": 2050, "address": "722 Palmetto Ave #A", "price_str": "$2,050/mo", "beds": 1, "baths": 1.0, "sqft_str": "", "days_text": "Yesterday", "days_cls": "yesterday", "parking_listing": "", "parking_context": "Lake Merced/Lakeshore — good street parking; low-density residential.", "laundry": "The unit includes convenient in-house laundry facilities, ensuring your comfort and convenience.", "zillow_url": "https://www.zillow.com/homedetails/722-Palmetto-Ave-A-San-Francisco-CA-94132/2054685146_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=722+Palmetto+Ave+%23A%2C+San+Francisco%2C+CA", "saved": true}, {"uid": "461289452", "score": 9857.95, "days": 0, "price": 2795, "address": "522 Geary St #403", "price_str": "$2,795/mo", "beds": 1, "baths": 1.0, "sqft_str": "", "days_text": "Today", "days_cls": "today", "parking_listing": "No parking", "parking_context": "Civic Center area — very limited; high theft risk. Garage strongly recommended.", "laundry": "This thoughtfully updated unit offers a smart and functional layout, featuring a defined sleeping area, modern finishes, and the convenience of in-unit laundry. In-unit laundry", "zillow_url": "https://www.zillow.com/homedetails/522-Geary-St-403-San-Francisco-CA-94102/461289452_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=522+Geary+St+%23403%2C+San+Francisco%2C+CA", "saved": false}, {"uid": "461287987", "score": 9866.5, "days": 0, "price": 3650, "address": "501 Douglass St APT 3", "price_str": "$3,650/mo", "beds": 1, "baths": 1.0, "sqft_str": " &middot; 600 sqft", "days_text": "Today", "days_cls": "today", "parking_listing": "Bike parking included Garage parking available for $250 per month", "parking_context": "Castro — moderate street parking; RPP Zone B. Side streets off Castro St tend to have more availability.", "laundry": "New eat-in kitchen with dishwasher Laundry facility in building", "zillow_url": "https://www.zillow.com/apartments/san-francisco-ca/501-douglass-st./5j4BvN/", "maps_url": "https://www.google.com/maps/search/?api=1&query=501+Douglass+St+APT+3%2C+San+Francisco%2C+CA", "saved": false}];
     const REPO = "richinroygeorge/rich";
-    const FAV_URL = `https://raw.githubusercontent.com/${REPO}/main/favorites.json`;
 
     // In-memory favorites map: uid -> card object
     let favMap = {};
     let pendingFavUid = null;
 
-    function getToken() { return sessionStorage.getItem('gh_token'); }
+    function getToken() { return localStorage.getItem('gh_token'); }
 
-    // Load favorites live from the repo on every page load
+    // Load favorites via GitHub API (real-time, no CDN cache)
     async function loadFavorites() {
       try {
-        const resp = await fetch(FAV_URL + '?t=' + Date.now());
-        const data = await resp.json();
+        const resp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
+          headers: { 'Accept': 'application/vnd.github.v3+json' }
+        });
+        const meta = await resp.json();
+        const data = JSON.parse(atob(meta.content.replace(/
+/g, '')));
         favMap = {};
         data.forEach(s => { if (s.uid) favMap[s.uid] = s; });
       } catch(e) {
-        // fallback: mark any fresh listings that were saved at generation time
         FRESH.forEach(c => { if (c.saved) favMap[c.uid] = c; });
       }
       renderFresh('recent');
@@ -250,7 +252,7 @@
     function submitToken() {
       const tok = document.getElementById('tokenInput').value.trim();
       if (!tok) return;
-      sessionStorage.setItem('gh_token', tok);
+      localStorage.setItem('gh_token', tok);
       closeModal();
       if (pendingFavUid) {
         const card = FRESH.find(c => c.uid === pendingFavUid) || favMap[pendingFavUid];
