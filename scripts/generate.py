@@ -362,18 +362,29 @@ html = """<!DOCTYPE html>
 
   <script>
     const FRESH = CARDS_JSON_PLACEHOLDER;
-    const SAVED_INIT = SAVED_JSON_PLACEHOLDER;
     const REPO = "richinroygeorge/rich";
+    const FAV_URL = `https://raw.githubusercontent.com/${REPO}/main/favorites.json`;
 
     // In-memory favorites map: uid -> card object
     let favMap = {};
-    SAVED_INIT.forEach(s => { favMap[s.uid] = s; });
-    // Also merge any saved state from fresh listings
-    FRESH.forEach(c => { if (c.saved) favMap[c.uid] = c; });
-
     let pendingFavUid = null;
 
     function getToken() { return sessionStorage.getItem('gh_token'); }
+
+    // Load favorites live from the repo on every page load
+    async function loadFavorites() {
+      try {
+        const resp = await fetch(FAV_URL + '?t=' + Date.now());
+        const data = await resp.json();
+        favMap = {};
+        data.forEach(s => { if (s.uid) favMap[s.uid] = s; });
+      } catch(e) {
+        // fallback: mark any fresh listings that were saved at generation time
+        FRESH.forEach(c => { if (c.saved) favMap[c.uid] = c; });
+      }
+      renderFresh('recent');
+      updateSavedBadge();
+    }
 
     function showTab(tab, btn) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -542,9 +553,8 @@ html = """<!DOCTYPE html>
       setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    // Init
-    renderFresh('recent');
-    updateSavedBadge();
+    // Init — fetch live favorites then render
+    loadFavorites();
   </script>
 </body>
 </html>"""
@@ -553,7 +563,6 @@ html = html.replace("UPDATED_TIME", now_str)
 html = html.replace("COUNT_PLACEHOLDER", str(count))
 html = html.replace("SAVED_COUNT", str(saved_count))
 html = html.replace("CARDS_JSON_PLACEHOLDER", cards_json)
-html = html.replace("SAVED_JSON_PLACEHOLDER", saved_json)
 
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html)
