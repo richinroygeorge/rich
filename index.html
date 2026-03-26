@@ -1,45 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SF Rentals — Fresh Listings</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; }
-    header { background: #1a1a2e; color: white; padding: 1.5rem 2rem; }
-    header h1 { font-size: 1.5rem; font-weight: 700; }
-    header p { font-size: 0.85rem; opacity: 0.7; margin-top: 0.3rem; }
-    .criteria { background: #16213e; color: #a0aec0; font-size: 0.8rem; padding: 0.6rem 2rem; }
-    .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-    .count { font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
-    .card { background: white; border-radius: 10px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-    .address { font-weight: 600; font-size: 1rem; }
-    .meta { font-size: 0.85rem; color: #666; margin-top: 0.25rem; }
-    .right { text-align: right; flex-shrink: 0; }
-    .price { font-size: 1.2rem; font-weight: 700; color: #27ae60; }
-    .badge { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.5rem; border-radius: 4px; margin-top: 0.3rem; }
-    .today { background: #d4edda; color: #155724; }
-    .yesterday { background: #fff3cd; color: #856404; }
-    .older { background: #e2e3e5; color: #383d41; }
-    .parking { font-size: 0.85rem; color: #555; margin-top: 0.75rem; }
-    .amenities { margin-top: 0.75rem; }
-    .tag { display: inline-block; background: #eef2ff; color: #4338ca; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 20px; margin-right: 0.4rem; margin-top: 0.2rem; }
-    .btn { display: inline-block; margin-top: 1rem; background: #1a1a2e; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; }
-    .btn:hover { background: #2d2d4e; }
-    .empty { text-align: center; padding: 3rem; color: #888; background: white; border-radius: 10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF Rentals - Fresh Listings</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #222; }
+  header { background: #1a1a2e; color: #fff; padding: 28px 24px 20px; }
+  header h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.5px; }
+  header .ts { font-size: 0.82rem; color: #a0a8c8; margin-top: 6px; }
+  .filter-bar { background: #16213e; color: #c8d0ea; font-size: 0.83rem; padding: 10px 24px; letter-spacing: 0.2px; }
+  main { max-width: 1200px; margin: 32px auto; padding: 0 16px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.09); overflow: hidden; display: flex; flex-direction: column; }
+  .card-body { padding: 18px 18px 14px; flex: 1; }
+  .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-today { background: #d4edda; color: #155724; }
+  .badge-yesterday { background: #fff3cd; color: #856404; }
+  .address { font-size: 1rem; font-weight: 700; line-height: 1.3; margin-bottom: 2px; }
+  .zip { font-size: 0.8rem; color: #666; margin-bottom: 10px; }
+  .price { font-size: 1.45rem; font-weight: 800; color: #1a7f3c; margin-bottom: 10px; }
+  .meta { display: flex; gap: 14px; font-size: 0.82rem; color: #555; margin-bottom: 10px; flex-wrap: wrap; }
+  .meta span { display: flex; align-items: center; gap: 4px; }
+  .amenities { font-size: 0.78rem; color: #444; margin-bottom: 8px; line-height: 1.5; }
+  .parking { font-size: 0.78rem; color: #1a5276; background: #eaf4fb; border-radius: 6px; padding: 4px 8px; margin-bottom: 8px; display: inline-block; }
+  .card-footer { padding: 12px 18px; border-top: 1px solid #f0f0f0; }
+  .btn { display: block; text-align: center; background: #1a1a2e; color: #fff; text-decoration: none; padding: 9px 0; border-radius: 7px; font-size: 0.87rem; font-weight: 600; transition: background 0.15s; }
+  .btn:hover { background: #2d2d5e; }
+  .empty { text-align: center; padding: 80px 20px; color: #666; }
+  .empty h2 { font-size: 1.3rem; margin-bottom: 10px; color: #333; }
+  .empty p { font-size: 0.95rem; line-height: 1.6; }
+  footer { text-align: center; padding: 30px 16px; font-size: 0.78rem; color: #aaa; }
+</style>
 </head>
 <body>
-  <header>
-    <h1>SF Rentals — Fresh Listings</h1>
-    <p>Updated: March 26, 2026 at 06:09 UTC</p>
-  </header>
-  <div class="criteria">1 bed min · $3,000–$4,000/mo · Listed in last 24h · No big complexes · No Nob Hill / Tenderloin / Mission / SOMA</div>
-  <div class="container">
-    <p class="count">0 listings found</p>
-    <div class="empty">No listings found matching your criteria right now. Check back soon.</div>
+<header>
+  <h1>SF Rentals &mdash; Fresh Listings</h1>
+  <div class="ts">Generated: 2026-03-26T00:00:00+00:00 UTC</div>
+</header>
+<div class="filter-bar">
+  1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA
+</div>
+<main>
+  <div class="grid" id="listings-grid">
+    <!-- listings injected below -->
   </div>
+  <div class="empty">
+    <h2>No listings available right now</h2>
+    <p>The data fetch encountered a network error (proxy blocked outbound connections).<br>
+    Please re-run when internet access is available to populate fresh SF rental listings.</p>
+  </div>
+</main>
+<footer>Data sourced from Zillow via RapidAPI &middot; Filters: 1+ bed, $3k&ndash;$4k/mo, &lt;24h on market, private units only</footer>
 </body>
 </html>
