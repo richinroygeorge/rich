@@ -348,8 +348,8 @@ html = """<!DOCTYPE html>
 
   <div class="token-modal" id="tokenModal">
     <div class="token-box">
-      <h3>Enter your GitHub token to save</h3>
-      <p>Your token needs <code>repo</code> scope for <strong>richinroygeorge/rich</strong>. It's stored only in this browser session &mdash; never sent anywhere except GitHub.</p>
+      <h3>One-time setup: enter your GitHub token</h3>
+      <p>Needed to save favorites. Requires <code>repo</code> scope on <strong>richinroygeorge/rich</strong>. Stored in this browser only &mdash; you won't be asked again on this device.</p>
       <input type="password" id="tokenInput" placeholder="ghp_..." />
       <div class="token-box-btns">
         <button class="btn btn-maps" onclick="closeModal()">Cancel</button>
@@ -363,23 +363,24 @@ html = """<!DOCTYPE html>
   <script>
     const FRESH = CARDS_JSON_PLACEHOLDER;
     const REPO = "richinroygeorge/rich";
-    const FAV_URL = `https://raw.githubusercontent.com/${REPO}/main/favorites.json`;
 
     // In-memory favorites map: uid -> card object
     let favMap = {};
     let pendingFavUid = null;
 
-    function getToken() { return sessionStorage.getItem('gh_token'); }
+    function getToken() { return localStorage.getItem('gh_token'); }
 
-    // Load favorites live from the repo on every page load
+    // Load favorites via GitHub API (real-time, no CDN cache)
     async function loadFavorites() {
       try {
-        const resp = await fetch(FAV_URL + '?t=' + Date.now());
-        const data = await resp.json();
+        const resp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
+          headers: { 'Accept': 'application/vnd.github.v3+json' }
+        });
+        const meta = await resp.json();
+        const data = JSON.parse(atob(meta.content.replace(/\n/g, '')));
         favMap = {};
         data.forEach(s => { if (s.uid) favMap[s.uid] = s; });
       } catch(e) {
-        // fallback: mark any fresh listings that were saved at generation time
         FRESH.forEach(c => { if (c.saved) favMap[c.uid] = c; });
       }
       renderFresh('recent');
@@ -506,7 +507,7 @@ html = """<!DOCTYPE html>
     function submitToken() {
       const tok = document.getElementById('tokenInput').value.trim();
       if (!tok) return;
-      sessionStorage.setItem('gh_token', tok);
+      localStorage.setItem('gh_token', tok);
       closeModal();
       if (pendingFavUid) {
         const card = FRESH.find(c => c.uid === pendingFavUid) || favMap[pendingFavUid];
