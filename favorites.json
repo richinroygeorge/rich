@@ -1,5 +1,25 @@
 [
   {
+    "uid": "461274046",
+    "score": 83,
+    "days": 1,
+    "price": 3300,
+    "address": "720 41st Ave APT 4",
+    "price_str": "$3,300/mo",
+    "beds": 2,
+    "baths": 1,
+    "sqft_str": " &middot; 1,000 sqft",
+    "days_text": "Yesterday",
+    "days_cls": "yesterday",
+    "parking_listing": "GARAGE SPACE INCLUDED",
+    "parking_context": "Outer Richmond — good residential street parking; less congested than inner neighborhoods.",
+    "laundry": "",
+    "listed_text": "Listed yesterday",
+    "zillow_url": "https://www.zillow.com/homedetails/720-41st-Ave-APT-4-San-Francisco-CA-94121/461274046_zpid/",
+    "maps_url": "https://www.google.com/maps/search/?api=1&query=720+41st+Ave+APT+4%2C+San+Francisco%2C+CA",
+    "saved": false
+  },
+  {
     "uid": "2054685146",
     "score": 100.5,
     "days": 1,
