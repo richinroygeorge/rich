@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "uid": "461287987",
+    "score": 9866.5,
+    "days": 0,
+    "price": 3650,
+    "address": "501 Douglass St APT 3",
+    "price_str": "$3,650/mo",
+    "beds": 1,
+    "baths": 1,
+    "sqft_str": " &middot; 600 sqft",
+    "days_text": "Today",
+    "days_cls": "today",
+    "parking_listing": "Bike parking included Garage parking available for $250 per month",
+    "parking_context": "Castro — moderate street parking; RPP Zone B. Side streets off Castro St tend to have more availability.",
+    "laundry": "New eat-in kitchen with dishwasher Laundry facility in building",
+    "zillow_url": "https://www.zillow.com/apartments/san-francisco-ca/501-douglass-st./5j4BvN/",
+    "maps_url": "https://www.google.com/maps/search/?api=1&query=501+Douglass+St+APT+3%2C+San+Francisco%2C+CA",
+    "saved": false
+  }
+]
