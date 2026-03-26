@@ -387,6 +387,7 @@ html = """<!DOCTYPE html>
         if (tok) headers['Authorization'] = `token ${tok}`;
         const resp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, { headers });
         const meta = await resp.json();
+        cachedSha = meta.sha; // Cache SHA so first save skips an extra GET
         const data = JSON.parse(atob(meta.content.replace(/\\n/g, '')));
         favMap = {};
         data.forEach(s => { if (s.uid) favMap[s.uid] = s; });
@@ -532,6 +533,7 @@ html = """<!DOCTYPE html>
 
     let isSaving = false;
     let savePending = false;
+    let cachedSha = null;
 
     async function persistFavorites() {
       if (isSaving) { savePending = true; return; }
@@ -541,26 +543,34 @@ html = """<!DOCTYPE html>
       if (!token) { isSaving = false; return; }
       const favorites = Object.values(favMap);
       try {
-        const metaResp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
-          headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-        });
-        const metaJson = await metaResp.json();
-        const sha = metaJson.sha;
+        // Only fetch SHA if we don't have it cached from loadFavorites or last PUT
+        if (!cachedSha) {
+          const metaResp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+            cache: 'no-store'
+          });
+          const metaJson = await metaResp.json();
+          cachedSha = metaJson.sha;
+        }
         const json = JSON.stringify(favorites, null, 2);
         const bytes = new TextEncoder().encode(json);
         const b64 = btoa(String.fromCharCode(...bytes));
         const res = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
           method: 'PUT',
           headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: 'Update favorites', content: b64, sha })
+          body: JSON.stringify({ message: 'Update favorites', content: b64, sha: cachedSha })
         });
         if (res.ok) {
+          const result = await res.json();
+          cachedSha = result.content.sha; // Always use the SHA from the response for next save
           showToast(favorites.length ? 'Saved!' : 'Removed from saved');
         } else {
+          cachedSha = null; // Force fresh SHA fetch on next attempt
           const err = await res.json();
           showToast('Error saving: ' + (err.message || res.status));
         }
       } catch(e) {
+        cachedSha = null;
         showToast('Network error — check your token');
       }
       isSaving = false;
