@@ -95,7 +95,7 @@ def get_property_details(zpid):
             timeout=30
         )
         data = resp.json()
-        return data.get("data", {})
+        return data.get("data") or {}
     except Exception as e:
         print(f"  Detail fetch error for {zpid}: {e}")
         return {}
@@ -222,7 +222,7 @@ for l in candidates:
     zpid = l.get("zpid")
     if zpid and not str(zpid).startswith("3"):
         print(f"  Fetching details for {zpid} — {l.get('address', '')}")
-        details = get_property_details(zpid)
+        details = get_property_details(zpid) or {}
         merged = {**l, **details}
     else:
         merged = dict(l)
