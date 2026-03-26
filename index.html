@@ -1,306 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SF Rentals &mdash; Fresh Listings</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SF Rentals - Fresh Listings</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; }
-    header { background: #1a1a2e; color: white; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-    header h1 { font-size: 1.4rem; font-weight: 700; }
-    header p { font-size: 0.82rem; opacity: 0.65; margin-top: 0.2rem; }
-    .criteria { background: #16213e; color: #8899bb; font-size: 0.78rem; padding: 0.5rem 2rem; }
-    .tabs { background: white; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 0; padding: 0 1.5rem; }
-    .tab { padding: 0.7rem 1.1rem; font-size: 0.85rem; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; color: #6b7280; background: none; border-top: none; border-left: none; border-right: none; }
-    .tab.active { color: #1a1a2e; border-bottom-color: #1a1a2e; }
-    .tab .badge { display: inline-block; background: #f1f5f9; color: #64748b; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: 0.3rem; font-weight: 600; }
-    .tab.active .badge { background: #1a1a2e; color: white; }
-    .toolbar { background: white; border-bottom: 1px solid #f1f5f9; padding: 0.5rem 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
-    .toolbar span { font-size: 0.8rem; color: #888; }
-    .sort-btn { border: 1px solid #e5e7eb; background: white; color: #374151; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.78rem; cursor: pointer; }
-    .sort-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
-    .container { max-width: 860px; margin: 1.25rem auto; padding: 0 1rem; }
-    .section-header { font-size: 0.85rem; color: #888; margin-bottom: 0.85rem; }
-    .card { background: white; border-radius: 10px; padding: 1.1rem 1.4rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
-    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-    .address { font-weight: 600; font-size: 0.97rem; padding-right: 2rem; }
-    .meta { font-size: 0.82rem; color: #777; margin-top: 0.2rem; }
-    .right { text-align: right; flex-shrink: 0; }
-    .price { font-size: 1.15rem; font-weight: 700; color: #16a34a; }
-    .badge-age { display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 0.18rem 0.5rem; border-radius: 4px; margin-top: 0.25rem; }
-    .today { background: #dcfce7; color: #166534; }
-    .yesterday { background: #fef9c3; color: #854d0e; }
-    .older { background: #f1f5f9; color: #64748b; }
-    .divider { border: none; border-top: 1px solid #f1f5f9; margin: 0.75rem 0; }
-    .info-row { display: flex; gap: 0.5rem; align-items: flex-start; margin-top: 0.45rem; font-size: 0.82rem; }
-    .info-label { font-weight: 600; color: #374151; flex-shrink: 0; width: 90px; }
-    .info-text { color: #555; line-height: 1.45; }
-    .no-info { color: #ccc; font-style: italic; }
-    .actions { display: flex; gap: 0.5rem; margin-top: 0.85rem; flex-wrap: wrap; align-items: center; }
-    .btn { display: inline-flex; align-items: center; gap: 0.3rem; text-decoration: none; padding: 0.38rem 0.8rem; border-radius: 6px; font-size: 0.78rem; font-weight: 500; border: none; cursor: pointer; }
-    .btn-zillow { background: #1a1a2e; color: white; }
-    .btn-maps { background: #fff; color: #374151; border: 1px solid #d1d5db; }
-    .btn:hover { opacity: 0.82; }
-    .fav-btn { background: none; border: none; cursor: pointer; font-size: 1.3rem; line-height: 1; padding: 0.1rem; color: #d1d5db; transition: color .15s, transform .1s; margin-left: auto; }
-    .fav-btn:hover { transform: scale(1.2); }
-    .fav-btn.saved { color: #f59e0b; }
-    .empty { text-align: center; padding: 2.5rem; color: #aaa; background: white; border-radius: 10px; font-size: 0.88rem; line-height: 1.6; }
-    .saved-badge { display: inline-block; background: #fef9c3; color: #92400e; font-size: 0.68rem; font-weight: 600; padding: 0.15rem 0.45rem; border-radius: 4px; margin-left: 0.4rem; vertical-align: middle; }
-    .token-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
-    .token-modal.show { display: flex; }
-    .token-box { background: white; border-radius: 12px; padding: 1.5rem; max-width: 420px; width: 90%; }
-    .token-box h3 { font-size: 1rem; margin-bottom: 0.5rem; }
-    .token-box p { font-size: 0.82rem; color: #666; margin-bottom: 1rem; line-height: 1.5; }
-    .token-box input { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.85rem; margin-bottom: 0.75rem; font-family: monospace; }
-    .token-box-btns { display: flex; gap: 0.5rem; justify-content: flex-end; }
-    .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: #1a1a2e; color: white; padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.82rem; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 200; }
-    .toast.show { opacity: 1; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f0f2f5;
+      color: #222;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 24px 32px;
+    }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    header .timestamp {
+      font-size: 0.8rem;
+      color: #a0aec0;
+      margin-top: 4px;
+    }
+    header .filter-summary {
+      margin-top: 10px;
+      display: inline-block;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      color: #cbd5e0;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 580px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.14); }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .address {
+      font-size: 0.97rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #1a1a2e;
+    }
+    .zipcode {
+      font-size: 0.78rem;
+      color: #718096;
+      margin-top: 2px;
+    }
+
+    .badge {
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-today { background: #c6f6d5; color: #22543d; }
+    .badge-yesterday { background: #fefcbf; color: #744210; }
+
+    .price {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: #276749;
+      letter-spacing: -0.5px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: #4a5568;
+    }
+    .meta span {
+      background: #edf2f7;
+      border-radius: 4px;
+      padding: 3px 8px;
+    }
+
+    .parking {
+      font-size: 0.82rem;
+      color: #2d3748;
+    }
+    .parking strong { color: #1a1a2e; }
+
+    .amenities {
+      font-size: 0.8rem;
+      color: #718096;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: block;
+      margin-top: auto;
+      text-align: center;
+      background: #1a1a2e;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background 0.18s;
+    }
+    .btn:hover { background: #2d2d5e; }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #718096;
+    }
+    .empty-state h2 {
+      font-size: 1.4rem;
+      color: #2d3748;
+      margin-bottom: 12px;
+    }
+    .empty-state p { font-size: 0.95rem; line-height: 1.6; }
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>SF Rentals &mdash; Fresh Listings</h1>
-      <p>Updated: March 26, 2026 at 06:57 UTC</p>
-    </div>
-  </header>
-  <div class="criteria">1 bed min &nbsp;&middot;&nbsp; $3,000&ndash;$4,000/mo &nbsp;&middot;&nbsp; Listed in last 24h &nbsp;&middot;&nbsp; Individual listings only &nbsp;&middot;&nbsp; No Nob Hill / Tenderloin / Mission / SOMA</div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('fresh',this)">Fresh Listings <span class="badge" id="fresh-count">5</span></button>
-    <button class="tab" onclick="showTab('saved',this)">Saved <span class="badge" id="saved-count">1</span></button>
+<header>
+  <h1>SF Rentals &mdash; Fresh Listings</h1>
+  <div class="timestamp">Last updated: 2026-03-26T07:05:58.211025+00:00 UTC</div>
+  <div class="filter-summary">
+    1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA
+  </div>
+</header>
+
+<main>
+
+  <div class="grid" id="listings-grid">
   </div>
 
-  <div id="tab-fresh">
-    <div class="toolbar">
-      <span>Sort:</span>
-      <button class="sort-btn active" onclick="sortBy('recent',this)">Recently Listed</button>
-      <button class="sort-btn" onclick="sortBy('best',this)">Best Match</button>
-      <button class="sort-btn" onclick="sortBy('price',this)">Price &uarr;</button>
-    </div>
-    <div class="container">
-      <div id="fresh-cards"></div>
-    </div>
+  <div class="empty-state" id="empty-state">
+    <h2>No listings found</h2>
+    <p>
+      No qualifying rentals were retrieved at this time.<br />
+      This is typically caused by network access restrictions preventing the API call to Zillow.<br />
+      Try re-running the aggregator from an environment with unrestricted outbound HTTPS access.
+    </p>
   </div>
 
-  <div id="tab-saved" style="display:none">
-    <div class="container" style="margin-top:1.25rem">
-      <div id="saved-cards"></div>
-    </div>
-  </div>
+</main>
 
-  <div class="token-modal" id="tokenModal">
-    <div class="token-box">
-      <h3>One-time setup: enter your GitHub token</h3>
-      <p>Needed to save favorites. Requires <code>repo</code> scope on <strong>richinroygeorge/rich</strong>. Stored in this browser only &mdash; you won't be asked again on this device.</p>
-      <input type="password" id="tokenInput" placeholder="ghp_..." />
-      <div class="token-box-btns">
-        <button class="btn btn-maps" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-zillow" onclick="submitToken()">Save &amp; Continue</button>
-      </div>
-    </div>
-  </div>
+<script>
+  const listings = [];
 
-  <div class="toast" id="toast"></div>
+  const grid = document.getElementById('listings-grid');
+  const emptyState = document.getElementById('empty-state');
 
-  <script>
-    const FRESH = [{"uid": "2094778349", "score": 9869.95, "days": 0, "price": 3995, "address": "452 Oak St APT 5", "price_str": "$3,995/mo", "beds": 1, "baths": 1.0, "sqft_str": " &middot; 500 sqft", "days_text": "Today", "days_cls": "today", "parking_listing": "**Please note, there is only street parking available. **Street Parking Only**", "parking_context": "Civic Center area — very limited; high theft risk. Garage strongly recommended.", "laundry": "This recently renovated, light filled apartment has been freshly painted throughout, stylish, modern light fixtures, stainless steel appliances and includes brand new in-unit washer and dryer all just steps away from Hayes Valley's best shopping and dining. - Brand new in-unit washer and dryer", "zillow_url": "https://www.zillow.com/homedetails/452-Oak-St-APT-5-San-Francisco-CA-94102/2094778349_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=452+Oak+St+APT+5%2C+San+Francisco%2C+CA", "saved": false}, {"uid": "461274046", "score": 83.0, "days": 1, "price": 3300, "address": "720 41st Ave APT 4", "price_str": "$3,300/mo", "beds": 2, "baths": 1.0, "sqft_str": " &middot; 1,000 sqft", "days_text": "Yesterday", "days_cls": "yesterday", "parking_listing": "GARAGE SPACE INCLUDED", "parking_context": "Outer Richmond — good residential street parking; less congested than inner neighborhoods.", "laundry": "", "zillow_url": "https://www.zillow.com/homedetails/720-41st-Ave-APT-4-San-Francisco-CA-94121/461274046_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=720+41st+Ave+APT+4%2C+San+Francisco%2C+CA", "saved": false}, {"uid": "2054685146", "score": 100.5, "days": 1, "price": 2050, "address": "722 Palmetto Ave #A", "price_str": "$2,050/mo", "beds": 1, "baths": 1.0, "sqft_str": "", "days_text": "Yesterday", "days_cls": "yesterday", "parking_listing": "", "parking_context": "Lake Merced/Lakeshore — good street parking; low-density residential.", "laundry": "The unit includes convenient in-house laundry facilities, ensuring your comfort and convenience.", "zillow_url": "https://www.zillow.com/homedetails/722-Palmetto-Ave-A-San-Francisco-CA-94132/2054685146_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=722+Palmetto+Ave+%23A%2C+San+Francisco%2C+CA", "saved": true}, {"uid": "461289452", "score": 9857.95, "days": 0, "price": 2795, "address": "522 Geary St #403", "price_str": "$2,795/mo", "beds": 1, "baths": 1.0, "sqft_str": "", "days_text": "Today", "days_cls": "today", "parking_listing": "No parking", "parking_context": "Civic Center area — very limited; high theft risk. Garage strongly recommended.", "laundry": "This thoughtfully updated unit offers a smart and functional layout, featuring a defined sleeping area, modern finishes, and the convenience of in-unit laundry. In-unit laundry", "zillow_url": "https://www.zillow.com/homedetails/522-Geary-St-403-San-Francisco-CA-94102/461289452_zpid/", "maps_url": "https://www.google.com/maps/search/?api=1&query=522+Geary+St+%23403%2C+San+Francisco%2C+CA", "saved": false}, {"uid": "461287987", "score": 9866.5, "days": 0, "price": 3650, "address": "501 Douglass St APT 3", "price_str": "$3,650/mo", "beds": 1, "baths": 1.0, "sqft_str": " &middot; 600 sqft", "days_text": "Today", "days_cls": "today", "parking_listing": "Bike parking included Garage parking available for $250 per month", "parking_context": "Castro — moderate street parking; RPP Zone B. Side streets off Castro St tend to have more availability.", "laundry": "New eat-in kitchen with dishwasher Laundry facility in building", "zillow_url": "https://www.zillow.com/apartments/san-francisco-ca/501-douglass-st./5j4BvN/", "maps_url": "https://www.google.com/maps/search/?api=1&query=501+Douglass+St+APT+3%2C+San+Francisco%2C+CA", "saved": false}];
-    const REPO = "richinroygeorge/rich";
+  if (listings.length === 0) {
+    emptyState.style.display = 'block';
+    grid.style.display = 'none';
+  } else {
+    emptyState.style.display = 'none';
+    grid.style.display = 'grid';
 
-    // In-memory favorites map: uid -> card object
-    let favMap = {};
-    let pendingFavUid = null;
+    listings.forEach(l => {
+      const days = l.days_on_zillow;
+      const badgeClass = days === 0 ? 'badge-today' : 'badge-yesterday';
+      const badgeLabel = days === 0 ? 'Today' : 'Yesterday';
 
-    function getToken() { return localStorage.getItem('gh_token'); }
+      const beds = l.bedrooms != null ? `${l.bedrooms} bd` : '';
+      const baths = l.bathrooms != null ? `${l.bathrooms} ba` : '';
+      const sqft = l.living_area ? `${l.living_area.toLocaleString()} sqft` : '';
 
-    // Load favorites via GitHub API (real-time, no CDN cache)
-    async function loadFavorites() {
-      try {
-        const resp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
-          headers: { 'Accept': 'application/vnd.github.v3+json' }
-        });
-        const meta = await resp.json();
-        const data = JSON.parse(atob(meta.content.replace(/
-/g, '')));
-        favMap = {};
-        data.forEach(s => { if (s.uid) favMap[s.uid] = s; });
-      } catch(e) {
-        FRESH.forEach(c => { if (c.saved) favMap[c.uid] = c; });
+      const desc = (l.description || '') + ' ' + JSON.stringify(l.details || {});
+      const parkingMatch = desc.match(/parking[^.;,\n]{0,80}/i);
+      const parkingInfo = parkingMatch ? parkingMatch[0].trim() : null;
+
+      const amenitiesArr = [];
+      if (l.details) {
+        const feats = l.details.resoFacts || {};
+        if (feats.laundry) amenitiesArr.push('Laundry: ' + (Array.isArray(feats.laundry) ? feats.laundry.join(', ') : feats.laundry));
+        if (feats.cooling) amenitiesArr.push('Cooling: ' + (Array.isArray(feats.cooling) ? feats.cooling.join(', ') : feats.cooling));
+        if (feats.heating) amenitiesArr.push('Heating: ' + (Array.isArray(feats.heating) ? feats.heating.join(', ') : feats.heating));
       }
-      renderFresh('recent');
-      updateSavedBadge();
-    }
 
-    function showTab(tab, btn) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-fresh').style.display = tab === 'fresh' ? '' : 'none';
-      document.getElementById('tab-saved').style.display = tab === 'saved' ? '' : 'none';
-      if (tab === 'saved') renderSaved();
-    }
+      const zillowUrl = l.detail_url
+        ? (l.detail_url.startsWith('http') ? l.detail_url : 'https://www.zillow.com' + l.detail_url)
+        : `https://www.zillow.com/homedetails/${l.zpid}_zpid/`;
 
-    function sortBy(mode, btn) {
-      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderFresh(mode);
-    }
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-header">
+          <div>
+            <div class="address">${l.address || 'Address N/A'}</div>
+            <div class="zipcode">ZIP ${l.zipcode || 'N/A'}</div>
+          </div>
+          <span class="badge ${badgeClass}">${badgeLabel}</span>
+        </div>
+        <div class="price">$${(l.price || 0).toLocaleString()}/mo</div>
+        <div class="meta">
+          ${beds ? `<span>${beds}</span>` : ''}
+          ${baths ? `<span>${baths}</span>` : ''}
+          ${sqft ? `<span>${sqft}</span>` : ''}
+        </div>
+        ${parkingInfo ? `<div class="parking"><strong>Parking:</strong> ${parkingInfo}</div>` : ''}
+        ${amenitiesArr.length ? `<div class="amenities">${amenitiesArr.join(' &middot; ')}</div>` : ''}
+        <a class="btn" href="${zillowUrl}" target="_blank" rel="noopener">View on Zillow &rarr;</a>
+      `;
+      grid.appendChild(card);
+    });
+  }
+</script>
 
-    function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    function cardHTML(p, inSavedTab) {
-      const isSaved = !!favMap[p.uid];
-      const favCls = isSaved ? 'saved' : '';
-      const favTitle = isSaved ? 'Remove from saved' : 'Save listing';
-      const pListing = p.parking_listing
-        ? `<div class="info-row"><span class="info-label">Parking</span><span class="info-text">${esc(p.parking_listing)}</span></div>`
-        : `<div class="info-row"><span class="info-label">Parking</span><span class="info-text no-info">Not mentioned in listing</span></div>`;
-      const pCtx = p.parking_context
-        ? `<div class="info-row"><span class="info-label">Neighborhood</span><span class="info-text">${esc(p.parking_context)}</span></div>`
-        : '';
-      const laundry = p.laundry
-        ? `<div class="info-row"><span class="info-label">Laundry</span><span class="info-text">${esc(p.laundry)}</span></div>`
-        : `<div class="info-row"><span class="info-label">Laundry</span><span class="info-text no-info">Not mentioned in listing</span></div>`;
-      const zBtn = p.zillow_url
-        ? `<a href="${esc(p.zillow_url)}" target="_blank" class="btn btn-zillow">View on Zillow</a>`
-        : '';
-      const mBtn = `<a href="${esc(p.maps_url)}" target="_blank" class="btn btn-maps"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>Maps</a>`;
-      const savedLabel = inSavedTab && !FRESH.find(f => f.uid === p.uid) ? '<span class="saved-badge">Saved</span>' : '';
-      return `<div class="card" id="card-${esc(p.uid)}">
-  <div class="card-top">
-    <div><div class="address">${esc(p.address)}${savedLabel}</div><div class="meta">${esc(String(p.beds))} bed &middot; ${esc(String(p.baths))} bath${p.sqft_str}</div></div>
-    <div class="right"><div class="price">${esc(p.price_str)}</div><span class="badge-age ${p.days_cls}">${esc(p.days_text)}</span></div>
-  </div>
-  <hr class="divider">
-  ${pListing}${pCtx}${laundry}
-  <div class="actions">${zBtn}${mBtn}<button class="fav-btn ${favCls}" onclick="toggleFav('${esc(p.uid)}')" title="${favTitle}">&#9733;</button></div>
-</div>`;
-    }
-
-    function renderFresh(mode) {
-      mode = mode || 'recent';
-      const sorted = [...FRESH];
-      if (mode === 'recent') sorted.sort((a,b) => a.days - b.days || a.price - b.price);
-      else if (mode === 'best') sorted.sort((a,b) => a.score - b.score);
-      else sorted.sort((a,b) => a.price - b.price);
-      const el = document.getElementById('fresh-cards');
-      el.innerHTML = sorted.length
-        ? sorted.map(p => cardHTML(p, false)).join('')
-        : '<div class="empty">No listings found right now matching your criteria.<br>Check back soon &mdash; this page refreshes every hour.</div>';
-    }
-
-    function renderSaved() {
-      const all = Object.values(favMap);
-      const el = document.getElementById('saved-cards');
-      if (!all.length) {
-        el.innerHTML = '<div class="empty">No saved listings yet.<br>Click the &#9733; on any listing to save it here permanently.</div>';
-        return;
-      }
-      el.innerHTML = all.map(p => cardHTML(p, true)).join('');
-      document.getElementById('saved-count').textContent = all.length;
-    }
-
-    function updateSavedBadge() {
-      const n = Object.keys(favMap).length;
-      document.getElementById('saved-count').textContent = n;
-    }
-
-    function toggleFav(uid) {
-      const card = FRESH.find(c => c.uid === uid) || favMap[uid];
-      if (!card) return;
-      if (favMap[uid]) {
-        // Remove
-        delete favMap[uid];
-        persistFavorites();
-      } else {
-        // Add — need token
-        if (!getToken()) {
-          pendingFavUid = uid;
-          document.getElementById('tokenModal').classList.add('show');
-          return;
-        }
-        favMap[uid] = card;
-        persistFavorites();
-      }
-      refreshCardButtons();
-      updateSavedBadge();
-    }
-
-    function refreshCardButtons() {
-      document.querySelectorAll('.card').forEach(el => {
-        const uid = el.id.replace('card-','');
-        const btn = el.querySelector('.fav-btn');
-        if (!btn) return;
-        if (favMap[uid]) {
-          btn.classList.add('saved');
-          btn.title = 'Remove from saved';
-        } else {
-          btn.classList.remove('saved');
-          btn.title = 'Save listing';
-        }
-      });
-    }
-
-    function closeModal() {
-      document.getElementById('tokenModal').classList.remove('show');
-      document.getElementById('tokenInput').value = '';
-      pendingFavUid = null;
-    }
-
-    function submitToken() {
-      const tok = document.getElementById('tokenInput').value.trim();
-      if (!tok) return;
-      localStorage.setItem('gh_token', tok);
-      closeModal();
-      if (pendingFavUid) {
-        const card = FRESH.find(c => c.uid === pendingFavUid) || favMap[pendingFavUid];
-        if (card) { favMap[pendingFavUid] = card; }
-        pendingFavUid = null;
-        persistFavorites();
-        refreshCardButtons();
-        updateSavedBadge();
-      }
-    }
-
-    async function persistFavorites() {
-      const token = getToken();
-      if (!token) return;
-      const favorites = Object.values(favMap);
-      try {
-        // Get current SHA
-        const meta = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
-          headers: { 'Authorization': `token ${token}` }
-        });
-        const metaJson = await meta.json();
-        const sha = metaJson.sha;
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(favorites, null, 2))));
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
-          method: 'PUT',
-          headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: 'Update favorites', content, sha })
-        });
-        if (res.ok) {
-          showToast(favorites.length ? 'Saved!' : 'Removed from saved');
-        } else {
-          const err = await res.json();
-          showToast('Error: ' + (err.message || 'could not save'));
-        }
-      } catch(e) {
-        showToast('Network error saving favorites');
-      }
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
-    }
-
-    // Init — fetch live favorites then render
-    loadFavorites();
-  </script>
 </body>
 </html>
