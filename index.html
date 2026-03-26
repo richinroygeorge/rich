@@ -1,59 +1,379 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SF Rentals - Fresh Listings</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #222; }
-  header { background: #1a1a2e; color: #fff; padding: 28px 24px 20px; }
-  header h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.5px; }
-  header .ts { font-size: 0.82rem; color: #a0a8c8; margin-top: 6px; }
-  .filter-bar { background: #16213e; color: #c8d0ea; font-size: 0.83rem; padding: 10px 24px; letter-spacing: 0.2px; }
-  main { max-width: 1200px; margin: 32px auto; padding: 0 16px; }
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
-  .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.09); overflow: hidden; display: flex; flex-direction: column; }
-  .card-body { padding: 18px 18px 14px; flex: 1; }
-  .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .badge-today { background: #d4edda; color: #155724; }
-  .badge-yesterday { background: #fff3cd; color: #856404; }
-  .address { font-size: 1rem; font-weight: 700; line-height: 1.3; margin-bottom: 2px; }
-  .zip { font-size: 0.8rem; color: #666; margin-bottom: 10px; }
-  .price { font-size: 1.45rem; font-weight: 800; color: #1a7f3c; margin-bottom: 10px; }
-  .meta { display: flex; gap: 14px; font-size: 0.82rem; color: #555; margin-bottom: 10px; flex-wrap: wrap; }
-  .meta span { display: flex; align-items: center; gap: 4px; }
-  .amenities { font-size: 0.78rem; color: #444; margin-bottom: 8px; line-height: 1.5; }
-  .parking { font-size: 0.78rem; color: #1a5276; background: #eaf4fb; border-radius: 6px; padding: 4px 8px; margin-bottom: 8px; display: inline-block; }
-  .card-footer { padding: 12px 18px; border-top: 1px solid #f0f0f0; }
-  .btn { display: block; text-align: center; background: #1a1a2e; color: #fff; text-decoration: none; padding: 9px 0; border-radius: 7px; font-size: 0.87rem; font-weight: 600; transition: background 0.15s; }
-  .btn:hover { background: #2d2d5e; }
-  .empty { text-align: center; padding: 80px 20px; color: #666; }
-  .empty h2 { font-size: 1.3rem; margin-bottom: 10px; color: #333; }
-  .empty p { font-size: 0.95rem; line-height: 1.6; }
-  footer { text-align: center; padding: 30px 16px; font-size: 0.78rem; color: #aaa; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SF Rentals — Fresh Listings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; }
+    header { background: #1a1a2e; color: white; padding: 1.5rem 2rem; }
+    header h1 { font-size: 1.5rem; font-weight: 700; }
+    header p { font-size: 0.85rem; opacity: 0.7; margin-top: 0.3rem; }
+    .criteria { background: #16213e; color: #a0aec0; font-size: 0.8rem; padding: 0.6rem 2rem; }
+    .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    .count { font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
+    .card { background: white; border-radius: 10px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+    .address { font-weight: 600; font-size: 1rem; }
+    .meta { font-size: 0.85rem; color: #666; margin-top: 0.25rem; }
+    .right { text-align: right; flex-shrink: 0; }
+    .price { font-size: 1.2rem; font-weight: 700; color: #27ae60; }
+    .badge { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.5rem; border-radius: 4px; margin-top: 0.3rem; }
+    .today { background: #d4edda; color: #155724; }
+    .yesterday { background: #fff3cd; color: #856404; }
+    .older { background: #e2e3e5; color: #383d41; }
+    .parking { font-size: 0.85rem; color: #555; margin-top: 0.75rem; }
+    .amenities { margin-top: 0.75rem; }
+    .tag { display: inline-block; background: #eef2ff; color: #4338ca; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 20px; margin-right: 0.4rem; margin-top: 0.2rem; }
+    .btn { display: inline-block; margin-top: 1rem; background: #1a1a2e; color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.85rem; }
+    .btn:hover { background: #2d2d4e; }
+    .empty { text-align: center; padding: 3rem; color: #888; background: white; border-radius: 10px; }
+  </style>
 </head>
 <body>
-<header>
-  <h1>SF Rentals &mdash; Fresh Listings</h1>
-  <div class="ts">Generated: 2026-03-26T00:00:00+00:00 UTC</div>
-</header>
-<div class="filter-bar">
-  1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA
+  <header>
+    <h1>SF Rentals — Fresh Listings</h1>
+    <p>Updated: March 26, 2026 at 06:14 UTC</p>
+  </header>
+  <div class="criteria">1 bed min · $3,000–$4,000/mo · Listed in last 24h · No big complexes · No Nob Hill / Tenderloin / Mission / SOMA</div>
+  <div class="container">
+    <p class="count">14 listings found</p>
+    
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">452 Oak St APT 5</div>
+    <div class="meta">1 bed · 1.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$3,995/mo</div>
+    <span class="badge today">Today</span>
+  </div>
 </div>
-<main>
-  <div class="grid" id="listings-grid">
-    <!-- listings injected below -->
+<p class="parking"><strong>Parking:</strong> **Please note, there is only street parking available</p>
+
+<a href="https://www.zillow.com/homedetails/452-Oak-St-APT-5-San-Francisco-CA-94102/2094778349_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">720 41st Ave APT 4</div>
+    <div class="meta">2 bed · 1.0 bath </div>
   </div>
-  <div class="empty">
-    <h2>No listings available right now</h2>
-    <p>The data fetch encountered a network error (proxy blocked outbound connections).<br>
-    Please re-run when internet access is available to populate fresh SF rental listings.</p>
+  <div class="right">
+    <div class="price">$3,300/mo</div>
+    <span class="badge yesterday">Yesterday</span>
   </div>
-</main>
-<footer>Data sourced from Zillow via RapidAPI &middot; Filters: 1+ bed, $3k&ndash;$4k/mo, &lt;24h on market, private units only</footer>
+</div>
+<p class="parking"><strong>Parking:</strong> LOTS OF SUNLIGHT
+Open Floor Plan
+Nice kitchen
+Countertop Spacing
+Renovated Bathroom
+Tiled floors
+Hardwood Flooring
+
+HARDWOOD FLOORING
+GARAGE SPACE INCLUDED
+
+Garbage and Water Included
+No Pets/No Sublease/No Smoking
+
+BEST WAY TO CONTACT US IS TO CALL -Please leave a message if we are unavailable
+
+1 Year LEASE
+NO PETS
+NO SMOKING</p>
+<div class="amenities"><span class="tag">Garage</span></div>
+<a href="https://www.zillow.com/homedetails/720-41st-Ave-APT-4-San-Francisco-CA-94121/461274046_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">756 Lake St #756</div>
+    <div class="meta">2 bed · 2.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$10,000/mo</div>
+    <span class="badge yesterday">Yesterday</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> Elevator to all levels, including the garage</p>
+<div class="amenities"><span class="tag">Garage</span></div>
+<a href="https://www.zillow.com/homedetails/756-Lake-St-756-San-Francisco-CA-94118/461253893_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">1774 45th Ave</div>
+    <div class="meta">3 bed · 2.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$5,600/mo</div>
+    <span class="badge today">Today</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> This level provides direct access to the backyard and the attached garage</p>
+<div class="amenities"><span class="tag">Garage</span></div>
+<a href="https://www.zillow.com/homedetails/1774-45th-Ave-San-Francisco-CA-94122/15110150_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">1789 McAllister St</div>
+    <div class="meta">1 bed · 2.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$5,000/mo</div>
+    <span class="badge today">Today</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> - Ground-floor 1-bedroom w/ office (or 2nd bedroom)
+- 2 full modern bathrooms
+- Access to a private outdoor patio
+- Hardwood floors throughout
+- Updated kitchen with stainless steel appliances
+- Modern finishes and high ceilings
+- Good natural light and clean contemporary feel
+- Well located for easy access to neighborhood amenities and transit
+- Off street parking for a small car
+Located in a central stretch of the city near the Divisadero corridor, this home puts you close to some of San Francisco's most loved destinations</p>
+
+<a href="https://www.zillow.com/homedetails/1789-McAllister-St-San-Francisco-CA-94115/2130456124_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">722 Palmetto Ave #A</div>
+    <div class="meta">1 bed · 1.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$2,050/mo</div>
+    <span class="badge yesterday">Yesterday</span>
+  </div>
+</div>
+
+
+<a href="https://www.zillow.com/homedetails/722-Palmetto-Ave-A-San-Francisco-CA-94132/2054685146_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">1440 Golden Gate Ave #203</div>
+    <div class="meta">1 bed · 1.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$4,495/mo</div>
+    <span class="badge today">Today</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> Features:
+
+1 bedroom, 1 full bathroom
+Shared on-site laundry
+Pet-friendly: Cats welcome, dogs up to 35 lbs allowed (Only one pet allowed)
+
+Lease Details:
+
+One-year lease
+Tenant responsible for all utilities, including water/sewer and trash
+No parking available
+
+Located near public transit, dining, and local attractions, this apartment offers both comfort and convenience in a central San Francisco location</p>
+
+<a href="https://www.zillow.com/homedetails/1440-Golden-Gate-Ave-203-San-Francisco-CA-94115/461289315_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">522 Geary St #403</div>
+    <div class="meta">1 bed · 1.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$2,795/mo</div>
+    <span class="badge today">Today</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> 1 Bedroom / 1 Bathroom
+Recently renovated
+In-unit laundry
+Small pets welcome (Only one pet allowed)
+No parking
+Tenant pays all utilities
+
+Live in the center of it all while enjoying the comfort of a modernized space in one of San Francisco's most connected neighborhoods</p>
+
+<a href="https://www.zillow.com/homedetails/522-Geary-St-403-San-Francisco-CA-94102/461289452_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">501 Douglass St APT 3</div>
+    <div class="meta">1 bed · 1.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$3,650/mo</div>
+    <span class="badge today">Today</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> Features include:
+Completely remodeled apartment
+Western exposure provides afternoon sun and view of Twin Peaks
+Wood plank flooring throughout
+New eat-in kitchen with dishwasher
+Double pane windows provide additional heat and sound insulation
+Bathroom with tub and shower combination
+Laundry facility in building
+Bike parking included
+Owner pays water & garbage
+12 month lease term, no pets and no smoking
+Garage parking available for $250 per month
+
+For more information or to schedule a tour, please contact:
+Sheila Kelleher
+DRE # 01962454
+
+Offered by Real Management Company
+DRE # 02023955</p>
+<div class="amenities"><span class="tag">Garage</span></div>
+<a href="https://www.zillow.com/apartments/san-francisco-ca/501-douglass-st./5j4BvN/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">450 Lansdale Ave</div>
+    <div class="meta">4 bed · 3.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$9,795/mo</div>
+    <span class="badge today">Today</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> Stunning View Home | Expansive Space, Decks + Garden | 2-Car Parking
+Welcome to 450 Lansdale a truly exceptional single-family home offering space, comfort, and breathtaking views</p>
+
+<a href="https://www.zillow.com/homedetails/450-Lansdale-Ave-San-Francisco-CA-94127/15135859_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">2273 15th St</div>
+    <div class="meta">2 bed · 1.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$6,995/mo</div>
+    <span class="badge today">Today</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> Top Floor 6 room with garage parking, private deck and in-unit laundry
+This top-floor 2-bedroom, 1-bath unit offers incredible flexibility, including a convertible dining room that can serve as a third bedroom</p>
+<div class="amenities"><span class="tag">Garage</span></div>
+<a href="https://www.zillow.com/homedetails/2273-15th-St-San-Francisco-CA-94114/2094636601_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">560 26th Ave APT 1</div>
+    <div class="meta">2 bed · 1.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$5,500/mo</div>
+    <span class="badge today">Today</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> Washer and dryer on property 
+Parking available for additional fee 
+No pets 
+Non smoking 
+No dishwasher in unit
+
+1 year lease 
+Non smoking Building
+No pets
+washer and dryer on property 
+Parking available for additional fee</p>
+
+<a href="https://www.zillow.com/homedetails/560-26th-Ave-APT-1-San-Francisco-CA-94121/2060524719_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">535 Broderick St APT 9</div>
+    <div class="meta">2 bed · 2.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$4,800/mo</div>
+    <span class="badge yesterday">Yesterday</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> - No parking available; street parking only</p>
+
+<a href="https://www.zillow.com/homedetails/535-Broderick-St-APT-9-San-Francisco-CA-94117/2057790871_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+        <div class="card">
+<div class="card-header">
+  <div>
+    <div class="address">1180 Broderick St APT 302</div>
+    <div class="meta">2 bed · 2.0 bath </div>
+  </div>
+  <div class="right">
+    <div class="price">$6,500/mo</div>
+    <span class="badge yesterday">Yesterday</span>
+  </div>
+</div>
+<p class="parking"><strong>Parking:</strong> Apartment Features:
+
+2 Beds, 2 Baths, 1,218 sq ft corner unit
+
+Updated kitchen & master bathroom
+
+Hardwood floors throughout
+
+Fully automatic roller blinds; new energy-efficient windows
+
+In-unit walk-in storage closet (has been repurposed as a mini office or mini nursery by prior residents)
+
+One assigned parking space included, with option to rent a second space for an additional fee
+
+Building Features:
+
+Building elevator provides convenient access to the third-floor unitideal for groceries, strollers, and everyday ease
+
+Video & app-enabled intercom for front gate allows residents to buzz in guests and deliveries remotely
+
+Shared laundry in-building
+
+Shared backyard & communal rooftop patio with city skyline views
+
+Prime Location:
+
+Centrally located in Anza Vista with outstanding access to some of San Francisco's best amenities
+
+Close to Alamo Square, the Panhandle, Alta Plaza, and Golden Gate Park
+
+Walking distance to Target, Trader Joe's, and a variety of excellent bakeries, cafes, shops, and restaurants along the Divisadero, Japantown, and Fillmore corridors
+
+Just blocks from the local library, Hamilton Recreation Center & Pool, and multiple playgrounds
+
+Two blocks from the Muni 38/38R lines, offering a direct route to the Financial District and Salesforce Transit Center</p>
+
+<a href="https://www.zillow.com/homedetails/1180-Broderick-St-APT-302-San-Francisco-CA-94115/15084354_zpid/" target="_blank" class="btn">View on Zillow</a>
+        </div>
+        
+  </div>
 </body>
 </html>
