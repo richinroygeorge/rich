@@ -1,199 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SF Rentals - Fresh Listings</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f0f2f5;
-      color: #1a1a2e;
-      min-height: 100vh;
-    }
-    header {
-      background: #1a1a2e;
-      color: #fff;
-      padding: 2rem 1.5rem 1.5rem;
-      text-align: center;
-    }
-    header h1 {
-      font-size: clamp(1.4rem, 4vw, 2.2rem);
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-    header .timestamp {
-      font-size: 0.85rem;
-      color: #a0a8c0;
-      margin-top: 0.4rem;
-    }
-    .filter-bar {
-      background: #16213e;
-      color: #c8d0e8;
-      text-align: center;
-      padding: 0.75rem 1rem;
-      font-size: 0.85rem;
-      letter-spacing: 0.02em;
-    }
-    .meta-bar {
-      max-width: 1100px;
-      margin: 1.5rem auto 0.5rem;
-      padding: 0 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .count {
-      font-size: 0.95rem;
-      color: #555;
-      font-weight: 600;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      max-width: 1100px;
-      margin: 1rem auto 3rem;
-      padding: 0 1rem;
-    }
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 600px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.09);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.13);
-    }
-    .card-header {
-      padding: 1.1rem 1.25rem 0.6rem;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    .badge {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      padding: 0.2rem 0.55rem;
-      border-radius: 20px;
-      margin-bottom: 0.5rem;
-    }
-    .badge.today { background: #d4edda; color: #155724; }
-    .badge.yesterday { background: #fff3cd; color: #856404; }
-    .address {
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.3;
-      color: #1a1a2e;
-    }
-    .zip {
-      font-size: 0.8rem;
-      color: #888;
-      margin-top: 0.2rem;
-    }
-    .card-body {
-      padding: 0.9rem 1.25rem;
-      flex: 1;
-    }
-    .price {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: #1e7e34;
-      margin-bottom: 0.5rem;
-    }
-    .stats {
-      display: flex;
-      gap: 0.75rem;
-      font-size: 0.85rem;
-      color: #555;
-      margin-bottom: 0.6rem;
-    }
-    .stats span {
-      background: #f5f5f5;
-      padding: 0.2rem 0.6rem;
-      border-radius: 6px;
-    }
-    .parking {
-      font-size: 0.8rem;
-      color: #444;
-      margin: 0.5rem 0;
-      line-height: 1.4;
-    }
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.5rem;
-    }
-    .tag {
-      background: #e8f0fe;
-      color: #1a56db;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 0.2rem 0.55rem;
-      border-radius: 20px;
-    }
-    .card-footer {
-      padding: 0.9rem 1.25rem;
-      border-top: 1px solid #f0f0f0;
-    }
-    .btn {
-      display: block;
-      text-align: center;
-      background: #1a1a2e;
-      color: #fff;
-      text-decoration: none;
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      transition: background 0.15s;
-    }
-    .btn:hover { background: #2d2d5e; }
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #666;
-    }
-    .empty-state p { font-size: 1.1rem; margin-bottom: 0.5rem; }
-    .empty-sub { font-size: 0.9rem; color: #999; }
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      font-size: 0.78rem;
-      color: #aaa;
-      border-top: 1px solid #e0e0e0;
-      background: #fff;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF Rentals - Fresh Listings</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    color: #222;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 28px 24px 20px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  header .timestamp {
+    font-size: 0.85rem;
+    color: #a0aec0;
+    margin-bottom: 12px;
+  }
+
+  header .filter-summary {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 0.82rem;
+    color: #cbd5e0;
+    letter-spacing: 0.01em;
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 36px auto;
+    padding: 0 20px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.4rem; }
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.09), 0 1px 3px rgba(0,0,0,0.06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.18s;
+  }
+
+  .card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.13), 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  .card-body {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .address {
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.35;
+    color: #1a1a2e;
+  }
+
+  .badge {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .badge-today { background: #e6ffed; color: #1a7f3c; }
+  .badge-yesterday { background: #fff3cd; color: #856404; }
+
+  .zipcode {
+    font-size: 0.8rem;
+    color: #718096;
+  }
+
+  .price {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #22863a;
+    line-height: 1;
+    margin: 4px 0;
+  }
+
+  .specs {
+    display: flex;
+    gap: 16px;
+    font-size: 0.84rem;
+    color: #4a5568;
+    flex-wrap: wrap;
+  }
+
+  .specs span { display: flex; align-items: center; gap: 4px; }
+
+  .amenities {
+    font-size: 0.8rem;
+    color: #555;
+    background: #f7f8fa;
+    border-radius: 6px;
+    padding: 7px 10px;
+    line-height: 1.5;
+  }
+
+  .parking {
+    font-size: 0.8rem;
+    color: #2b6cb0;
+    font-weight: 600;
+  }
+
+  .card-footer {
+    padding: 14px 20px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .btn-zillow {
+    display: block;
+    width: 100%;
+    background: #006aff;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .btn-zillow:hover { background: #0054cc; }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #718096;
+  }
+
+  .empty-state .icon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  .empty-state h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 8px;
+  }
+
+  .empty-state p {
+    font-size: 0.95rem;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .error-banner {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    padding: 14px 18px;
+    color: #c53030;
+    font-size: 0.88rem;
+    margin-bottom: 28px;
+    font-family: monospace;
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1>SF Rentals - Fresh Listings</h1>
-    <p class="timestamp">Updated: 2026-04-01 04:18 UTC</p>
-  </header>
-  <div class="filter-bar">
-    1+ bed &nbsp;&bull;&nbsp; $3,000&ndash;$4,000/mo &nbsp;&bull;&nbsp; Listed in last 24hrs &nbsp;&bull;&nbsp; Excl. Nob Hill, Tenderloin, Mission, SOMA
+
+<header>
+  <h1>SF Rentals &mdash; Fresh Listings</h1>
+  <div class="timestamp">Generated: 2026-04-01T00:00:00+00:00 UTC</div>
+  <div class="filter-summary">
+    1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA
   </div>
-  <div class="meta-bar">
-    <span class="count">No listings found</span>
+</header>
+
+<main>
+  <div class="error-banner">
+    &#9888; Data fetch error: Network unavailable &mdash; outbound HTTPS connections blocked by proxy (403 Forbidden). Zillow API could not be reached. Listings below reflect zero results from this run.
   </div>
-  <div class="grid">
-    <div class="empty-state"><p>No listings matched your filters at this time.</p><p class="empty-sub">Check back soon — new listings are fetched daily.</p></div>
+
+  <div class="grid" id="listings-grid">
+    <!-- listings injected here -->
   </div>
-  <footer>Data sourced from Zillow via RapidAPI &bull; Filters: SF only, 1&ndash;5 beds, $3k&ndash;$4k/mo, &le;1 day on market</footer>
+
+  <div class="empty-state" id="empty-state">
+    <div class="icon">&#127968;</div>
+    <h2>No listings found</h2>
+    <p>No qualifying SF rentals were retrieved. This may be due to network restrictions, API quota limits, or no listings currently matching the filters (1+ bed, $3,000&ndash;$4,000/mo, listed in the last 24 hours, excluding Nob Hill, Tenderloin, Mission, and SOMA).</p>
+  </div>
+</main>
+
+<script>
+// Listings data embedded at generation time
+const listings = [];
+
+const grid = document.getElementById('listings-grid');
+const empty = document.getElementById('empty-state');
+
+if (listings.length === 0) {
+  empty.style.display = 'block';
+} else {
+  empty.style.display = 'none';
+  listings.forEach(l => {
+    const days = l.days_on_zillow;
+    const badge = days === 0
+      ? '<span class="badge badge-today">Today</span>'
+      : '<span class="badge badge-yesterday">Yesterday</span>';
+
+    const specs = [
+      l.bedrooms != null ? `&#127beds; ${l.bedrooms} bd` : '',
+      l.bathrooms != null ? `&#128690; ${l.bathrooms} ba` : '',
+      l.living_area ? `&#9634; ${l.living_area.toLocaleString()} sqft` : ''
+    ].filter(Boolean).join('');
+
+    const parkingMatch = (l.description || '').match(/park(ing)?[^.]{0,60}/i);
+    const parkingLine = parkingMatch
+      ? `<div class="parking">&#128665; ${parkingMatch[0].trim()}</div>` : '';
+
+    const amenities = (l.home_facts || []).slice(0, 5).map(f => f.value || '').filter(Boolean).join(' &middot; ');
+
+    grid.innerHTML += `
+      <div class="card">
+        <div class="card-body">
+          <div class="card-top">
+            <div class="address">${l.address || 'Address unavailable'}</div>
+            ${badge}
+          </div>
+          <div class="zipcode">ZIP ${l.zipcode || '—'}</div>
+          <div class="price">$${(l.price || 0).toLocaleString()}<span style="font-size:1rem;font-weight:400;color:#555">/mo</span></div>
+          <div class="specs">${specs}</div>
+          ${parkingLine}
+          ${amenities ? `<div class="amenities">${amenities}</div>` : ''}
+        </div>
+        <div class="card-footer">
+          <a class="btn-zillow" href="https://www.zillow.com${l.detail_url || ''}" target="_blank" rel="noopener">View on Zillow &rarr;</a>
+        </div>
+      </div>`;
+  });
+}
+</script>
 </body>
 </html>
