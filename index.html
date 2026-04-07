@@ -9,218 +9,130 @@
   body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: #f0f2f5;
-    color: #222;
+    color: #1a1a2e;
     min-height: 100vh;
   }
   header {
     background: #1a1a2e;
     color: #fff;
-    padding: 24px 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
   }
   header h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
     letter-spacing: -0.5px;
+    margin-bottom: 0.4rem;
   }
-  header .meta {
+  header .timestamp {
     font-size: 0.85rem;
-    color: #a0a8c8;
+    color: #a0a8c0;
+    margin-bottom: 0.75rem;
   }
   .filter-bar {
-    background: #16213e;
-    color: #c8d0e8;
-    padding: 10px 32px;
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2rem;
+    padding: 0.4rem 1.1rem;
     font-size: 0.82rem;
-    letter-spacing: 0.2px;
-    border-bottom: 1px solid #0f3460;
-  }
-  .filter-bar span {
-    color: #e94560;
-    font-weight: 600;
-  }
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 16px;
+    color: #c8d0e8;
+    border: 1px solid rgba(255,255,255,0.15);
   }
   .count-bar {
-    font-size: 0.9rem;
+    text-align: center;
+    padding: 1.1rem 1rem 0.2rem;
+    font-size: 0.95rem;
     color: #555;
-    margin-bottom: 20px;
-    font-weight: 500;
   }
+  .count-bar strong { color: #1a1a2e; }
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 1.25rem;
+    max-width: 1200px;
+    margin: 1.25rem auto 3rem;
+    padding: 0 1.25rem;
   }
-  @media (max-width: 900px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 580px) {
-    .grid { grid-template-columns: 1fr; }
-    header { padding: 16px; }
-    main { padding: 20px 10px; }
-  }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 580px) { .grid { grid-template-columns: 1fr; } }
   .card {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.09);
-    padding: 20px;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    transition: transform 0.15s, box-shadow 0.15s;
+    gap: 0.65rem;
+    transition: box-shadow 0.2s;
   }
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 22px rgba(0,0,0,0.14);
-  }
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .address {
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.3;
-    color: #1a1a2e;
-  }
+  .card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.14); }
+  .card-header { display: flex; flex-direction: column; gap: 0.25rem; }
   .badge {
-    flex-shrink: 0;
-    font-size: 0.7rem;
+    display: inline-block;
+    font-size: 0.72rem;
     font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 20px;
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
+    width: fit-content;
+    margin-bottom: 0.2rem;
   }
-  .badge-today { background: #d4edda; color: #155724; }
-  .badge-yesterday { background: #fff3cd; color: #856404; }
-  .zipcode {
-    font-size: 0.8rem;
-    color: #777;
-    margin-top: -6px;
-  }
-  .price {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #1a7a3c;
-  }
-  .specs {
-    display: flex;
-    gap: 12px;
-    font-size: 0.83rem;
-    color: #555;
-    flex-wrap: wrap;
-  }
-  .specs span {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-  .divider {
-    border: none;
-    border-top: 1px solid #eee;
-  }
-  .info-row {
-    font-size: 0.81rem;
-    color: #444;
-    line-height: 1.5;
-  }
-  .info-row strong {
-    color: #222;
-  }
-  .amenities {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .amenity-tag {
-    background: #f0f2f5;
-    border-radius: 6px;
-    padding: 3px 8px;
+  .badge.today { background: #d4edda; color: #155724; }
+  .badge.yesterday { background: #fff3cd; color: #856404; }
+  .address { font-weight: 700; font-size: 1rem; line-height: 1.3; }
+  .zip { font-size: 0.8rem; color: #777; }
+  .price { font-size: 1.6rem; font-weight: 800; color: #1a7a3c; }
+  .specs { display: flex; gap: 0.75rem; font-size: 0.85rem; color: #444; flex-wrap: wrap; }
+  .specs span { background: #f0f2f5; border-radius: 4px; padding: 0.2rem 0.5rem; }
+  .parking { font-size: 0.82rem; color: #555; }
+  .amenities { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .tag {
+    background: #eef0ff;
+    color: #3a3aaa;
+    border-radius: 4px;
     font-size: 0.75rem;
-    color: #444;
-    border: 1px solid #e0e3e8;
+    padding: 0.2rem 0.5rem;
   }
   .btn {
     display: block;
+    margin-top: auto;
     text-align: center;
     background: #1a1a2e;
     color: #fff;
     text-decoration: none;
-    padding: 10px 16px;
     border-radius: 8px;
-    font-size: 0.88rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    margin-top: auto;
-    transition: background 0.15s;
+    transition: background 0.18s;
   }
-  .btn:hover { background: #e94560; }
-  .empty-state {
+  .btn:hover { background: #2d2d5e; }
+  .empty {
     text-align: center;
-    padding: 80px 20px;
-    color: #777;
+    padding: 4rem 1rem;
+    grid-column: 1 / -1;
+    color: #888;
   }
-  .empty-state .icon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-  }
-  .empty-state h2 {
-    font-size: 1.3rem;
-    color: #444;
-    margin-bottom: 8px;
-  }
-  .empty-state p {
-    font-size: 0.92rem;
-    max-width: 400px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-  footer {
-    text-align: center;
-    padding: 24px;
-    font-size: 0.78rem;
-    color: #aaa;
-    border-top: 1px solid #e0e3e8;
-    margin-top: 40px;
-  }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty h2 { font-size: 1.4rem; color: #444; margin-bottom: 0.5rem; }
+  .empty p { font-size: 0.95rem; }
 </style>
 </head>
 <body>
-
 <header>
   <h1>SF Rentals &mdash; Fresh Listings</h1>
-  <div class="meta">Last updated: 2026-04-07T01:18:08.448757+00:00 UTC</div>
+  <div class="timestamp">Updated: 2026-04-07T02:01:44.794515+00:00 UTC</div>
+  <div class="filter-bar">1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA</div>
 </header>
+<div class="count-bar">Showing <strong>0</strong> qualifying listings</div>
+<div class="grid">
 
-<div class="filter-bar">
-  <span>Filters:</span> 1+ bed &nbsp;&middot;&nbsp; $3,000&ndash;$4,000/mo &nbsp;&middot;&nbsp; Listed in last 24hrs &nbsp;&middot;&nbsp; Excl. Nob Hill, Tenderloin, Mission, SOMA
-</div>
-
-<main>
-  <div class="count-bar">0 listings found</div>
-
-  <div class="grid" id="listing-grid">
-
-    <div class="empty-state" style="grid-column: 1 / -1;">
-      <div class="icon">&#127968;</div>
+    <div class="empty">
+      <div class="empty-icon">&#128269;</div>
       <h2>No listings found</h2>
-      <p>No qualifying rentals were found matching your criteria at this time. The data source could not be reached. Please check back soon or adjust your filters.</p>
+      <p>No SF rentals matched all filters at this time. Check back soon!</p>
     </div>
-
-  </div>
-</main>
-
-<footer>
-  SF Rentals Aggregator &mdash; Data sourced from Zillow via RapidAPI &mdash; For informational use only
-</footer>
-
+</div>
 </body>
 </html>
