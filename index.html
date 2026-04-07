@@ -1,256 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SF Rentals - Fresh Listings</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF Rentals - Fresh Listings</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f0f2f5;
-      color: #222;
-      min-height: 100vh;
-    }
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    color: #222;
+    min-height: 100vh;
+  }
 
-    header {
-      background: #1a1a2e;
-      color: #fff;
-      padding: 24px 32px;
-    }
+  header {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 28px 24px 20px;
+    text-align: center;
+  }
 
-    header h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
-    }
+  header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
 
-    .timestamp {
-      font-size: 0.8rem;
-      color: #a0a8c0;
-      margin-bottom: 10px;
-    }
+  header .timestamp {
+    font-size: 0.82rem;
+    color: #a0a8c0;
+    margin-bottom: 12px;
+  }
 
-    .filter-summary {
-      display: inline-block;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 20px;
-      padding: 5px 14px;
-      font-size: 0.78rem;
-      color: #c8d0e8;
-    }
+  .filter-bar {
+    display: inline-block;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 0.83rem;
+    color: #c8d0e8;
+    letter-spacing: 0.01em;
+  }
 
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 32px 16px;
-    }
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 16px 48px;
+  }
 
-    .results-count {
-      font-size: 0.9rem;
-      color: #666;
-      margin-bottom: 20px;
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
 
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-    }
+  @media (max-width: 580px) {
+    .grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.4rem; }
+  }
 
-    @media (max-width: 580px) {
-      .grid { grid-template-columns: 1fr; }
-    }
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.09), 0 1px 3px rgba(0,0,0,0.06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
 
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.09), 0 0 1px rgba(0,0,0,0.08);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: box-shadow 0.2s;
-    }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.13), 0 2px 6px rgba(0,0,0,0.07);
+  }
 
-    .card:hover {
-      box-shadow: 0 6px 24px rgba(0,0,0,0.13), 0 0 1px rgba(0,0,0,0.08);
-    }
+  .card-body {
+    padding: 18px 18px 14px;
+    flex: 1;
+  }
 
-    .card-body {
-      padding: 18px 18px 14px;
-      flex: 1;
-    }
+  .badge-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
 
-    .badge-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 9px;
+    border-radius: 12px;
+  }
 
-    .badge {
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 2px 9px;
-      border-radius: 10px;
-    }
+  .badge-today   { background: #e6f9f0; color: #1a8a50; }
+  .badge-yesterday { background: #fff3e0; color: #b35c00; }
 
-    .badge-today {
-      background: #d4edda;
-      color: #155724;
-    }
+  .address {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 3px;
+    color: #1a1a2e;
+  }
 
-    .badge-yesterday {
-      background: #fff3cd;
-      color: #856404;
-    }
+  .zip {
+    font-size: 0.8rem;
+    color: #777;
+    margin-bottom: 10px;
+  }
 
-    .address {
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 3px;
-      color: #1a1a2e;
-    }
+  .price {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #1a8a50;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
 
-    .zipcode {
-      font-size: 0.8rem;
-      color: #888;
-      margin-bottom: 10px;
-    }
+  .price span { font-size: 0.9rem; font-weight: 500; color: #555; }
 
-    .price {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #1a7a3c;
-      margin-bottom: 10px;
-    }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.82rem;
+    color: #444;
+    margin-bottom: 10px;
+  }
 
-    .details {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 0.82rem;
-      color: #555;
-      margin-bottom: 10px;
-    }
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
 
-    .detail-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+  .meta-icon { font-size: 1em; }
 
-    .detail-icon {
-      font-size: 0.9rem;
-    }
+  .amenities {
+    font-size: 0.78rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
 
-    .divider {
-      border: none;
-      border-top: 1px solid #f0f0f0;
-      margin: 10px 0;
-    }
+  .parking {
+    font-size: 0.78rem;
+    color: #1a5fa8;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
 
-    .amenities {
-      font-size: 0.78rem;
-      color: #666;
-      line-height: 1.5;
-    }
+  .card-footer {
+    padding: 0 18px 16px;
+  }
 
-    .amenity-tag {
-      display: inline-block;
-      background: #f0f4ff;
-      color: #3a5bd9;
-      border-radius: 6px;
-      padding: 2px 8px;
-      margin: 2px 2px 2px 0;
-      font-size: 0.73rem;
-    }
+  .btn {
+    display: block;
+    text-align: center;
+    background: #1a1a2e;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-size: 0.87rem;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
 
-    .parking-info {
-      font-size: 0.78rem;
-      color: #444;
-      margin-top: 6px;
-      padding: 5px 8px;
-      background: #f8f9fa;
-      border-radius: 6px;
-    }
+  .btn:hover { background: #2d2d55; }
 
-    .card-footer {
-      padding: 12px 18px;
-      background: #fafafa;
-      border-top: 1px solid #f0f0f0;
-    }
+  .empty-state {
+    text-align: center;
+    padding: 64px 24px;
+    color: #666;
+  }
 
-    .view-btn {
-      display: block;
-      width: 100%;
-      text-align: center;
-      background: #1a1a2e;
-      color: #fff;
-      text-decoration: none;
-      padding: 9px 0;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: background 0.15s;
-    }
+  .empty-state .icon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+    display: block;
+  }
 
-    .view-btn:hover {
-      background: #2d2d52;
-    }
+  .empty-state h2 {
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 8px;
+  }
 
-    .empty-state {
-      text-align: center;
-      padding: 64px 20px;
-      color: #888;
-    }
-
-    .empty-state .empty-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-    }
-
-    .empty-state h2 {
-      font-size: 1.3rem;
-      color: #555;
-      margin-bottom: 8px;
-    }
-
-    .empty-state p {
-      font-size: 0.9rem;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-  </style>
+  .empty-state p {
+    font-size: 0.95rem;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+</style>
 </head>
 <body>
 
 <header>
-  <h1>SF Rentals &mdash; Fresh Listings</h1>
-  <div class="timestamp">Last updated: 2026-04-07T11:06:49+00:00 UTC</div>
-  <div class="filter-summary">1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA</div>
+  <h1>SF Rentals - Fresh Listings</h1>
+  <div class="timestamp" id="ts"></div>
+  <div class="filter-bar">1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA</div>
 </header>
 
 <main>
-  <div class="results-count">0 listings found</div>
-
-  <div class="empty-state">
-    <div class="empty-icon">&#127968;</div>
-    <h2>No listings available right now</h2>
-    <p>No qualifying SF rentals were found matching the current filters. Check back soon &mdash; listings are refreshed regularly.</p>
-  </div>
-
+  <div class="grid" id="grid"></div>
 </main>
 
+<script>
+const LISTINGS = [];
+
+// Timestamp
+const ts = new Date().toUTCString();
+document.getElementById('ts').textContent = 'Updated: ' + ts;
+
+const grid = document.getElementById('grid');
+
+function extractParking(desc) {
+  if (!desc) return null;
+  const m = desc.match(/park(ing)?[^.]{0,60}/i);
+  return m ? m[0].trim() : null;
+}
+
+function renderCard(l) {
+  const days = l.days_on_zillow;
+  const badgeClass = days === 0 ? 'badge-today' : 'badge-yesterday';
+  const badgeText  = days === 0 ? 'Today' : 'Yesterday';
+
+  const beds  = l.bedrooms  != null ? l.bedrooms + ' bd'  : '';
+  const baths = l.bathrooms != null ? l.bathrooms + ' ba' : '';
+  const sqft  = l.living_area ? l.living_area.toLocaleString() + ' sqft' : '';
+
+  const desc = (l.details && l.details.description) || l.description || '';
+  const parking = extractParking(desc);
+
+  const amenities = [];
+  if (l.details && Array.isArray(l.details.amenities)) {
+    l.details.amenities.slice(0, 6).forEach(a => amenities.push(a));
+  }
+
+  const url = l.detail_url
+    ? (l.detail_url.startsWith('http') ? l.detail_url : 'https://www.zillow.com' + l.detail_url)
+    : '#';
+
+  return `
+    <div class="card">
+      <div class="card-body">
+        <div class="badge-row">
+          <span class="badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <div class="address">${l.address || 'Address unavailable'}</div>
+        <div class="zip">${l.zipcode ? 'ZIP ' + l.zipcode : ''}</div>
+        <div class="price">$${(l.price||0).toLocaleString()} <span>/mo</span></div>
+        <div class="meta">
+          ${beds  ? `<span class="meta-item"><span class="meta-icon">&#127968;</span>${beds}</span>` : ''}
+          ${baths ? `<span class="meta-item"><span class="meta-icon">&#128704;</span>${baths}</span>` : ''}
+          ${sqft  ? `<span class="meta-item"><span class="meta-icon">&#9701;</span>${sqft}</span>` : ''}
+        </div>
+        ${parking ? `<div class="parking">&#128663; ${parking}</div>` : ''}
+        ${amenities.length ? `<div class="amenities">${amenities.join(' &middot; ')}</div>` : ''}
+      </div>
+      <div class="card-footer">
+        <a class="btn" href="${url}" target="_blank" rel="noopener">View on Zillow &rarr;</a>
+      </div>
+    </div>
+  `;
+}
+
+if (LISTINGS.length === 0) {
+  grid.innerHTML = `
+    <div class="empty-state" style="grid-column:1/-1">
+      <span class="icon">&#127968;</span>
+      <h2>No listings found right now</h2>
+      <p>No SF rentals matching your filters (1+ bed, $3,000&ndash;$4,000/mo, listed in the last 24 hours, excluding Nob Hill / Tenderloin / Mission / SOMA) were available at the time of the last fetch.</p>
+    </div>
+  `;
+} else {
+  grid.innerHTML = LISTINGS.map(renderCard).join('');
+}
+</script>
 </body>
 </html>
