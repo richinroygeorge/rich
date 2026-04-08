@@ -1,263 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SF Rentals - Fresh Listings</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #f0f2f5;
-    color: #222;
-    min-height: 100vh;
-  }
-
-  header {
-    background: #1a1a2e;
-    color: #fff;
-    padding: 28px 32px 22px;
-  }
-
-  header h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 6px;
-  }
-
-  header .timestamp {
-    font-size: 0.82rem;
-    color: #a0a8c0;
-    margin-bottom: 10px;
-  }
-
-  .filter-summary {
-    display: inline-block;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 20px;
-    padding: 5px 14px;
-    font-size: 0.8rem;
-    color: #c8d0e8;
-  }
-
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 16px 48px;
-  }
-
-  .results-count {
-    font-size: 0.9rem;
-    color: #555;
-    margin-bottom: 20px;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  @media (max-width: 900px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (max-width: 580px) {
-    .grid { grid-template-columns: 1fr; }
-    header { padding: 20px 16px 16px; }
-    header h1 { font-size: 1.35rem; }
-  }
-
-  .card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  }
-
-  .card-body {
-    padding: 18px 18px 12px;
-    flex: 1;
-  }
-
-  .card-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-
-  .address {
-    font-size: 0.98rem;
-    font-weight: 700;
-    color: #1a1a2e;
-    line-height: 1.3;
-    flex: 1;
-  }
-
-  .badge {
-    flex-shrink: 0;
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .badge-today { background: #e6f9ee; color: #1a7a3c; }
-  .badge-yesterday { background: #fff3e0; color: #b85c00; }
-
-  .zipcode {
-    font-size: 0.78rem;
-    color: #888;
-    margin-bottom: 10px;
-  }
-
-  .price {
-    font-size: 1.55rem;
-    font-weight: 800;
-    color: #1a7a3c;
-    margin-bottom: 10px;
-    line-height: 1;
-  }
-
-  .price span {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #555;
-  }
-
-  .details-row {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-    font-size: 0.82rem;
-    color: #444;
-  }
-
-  .detail-item {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-
-  .detail-item svg {
-    opacity: 0.55;
-  }
-
-  .amenities {
-    font-size: 0.78rem;
-    color: #666;
-    line-height: 1.5;
-    margin-top: 6px;
-    padding-top: 8px;
-    border-top: 1px solid #f0f0f0;
-  }
-
-  .amenities-tag {
-    display: inline-block;
-    background: #f4f5f8;
-    border-radius: 4px;
-    padding: 2px 7px;
-    margin: 2px 2px 2px 0;
-    font-size: 0.74rem;
-    color: #555;
-  }
-
-  .parking-note {
-    font-size: 0.78rem;
-    color: #555;
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .card-footer {
-    padding: 12px 18px 16px;
-    border-top: 1px solid #f0f0f0;
-  }
-
-  .btn-view {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background: #1a1a2e;
-    color: #fff;
-    text-align: center;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    transition: background 0.15s;
-  }
-
-  .btn-view:hover { background: #2e2e5e; }
-
-  .empty-state {
-    text-align: center;
-    padding: 64px 24px;
-    color: #777;
-  }
-
-  .empty-state .icon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-    opacity: 0.4;
-  }
-
-  .empty-state h2 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 8px;
-  }
-
-  .empty-state p {
-    font-size: 0.9rem;
-    max-width: 360px;
-    margin: 0 auto;
-    line-height: 1.6;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SF Rentals &mdash; Fresh Listings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #333; }
+    header { background: #1a1a2e; color: white; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    header h1 { font-size: 1.4rem; font-weight: 700; }
+    header p { font-size: 0.82rem; opacity: 0.65; margin-top: 0.2rem; }
+    .criteria { background: #16213e; color: #8899bb; font-size: 0.78rem; padding: 0.5rem 2rem; }
+    .tabs { background: white; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; gap: 0; padding: 0 1.5rem; }
+    .tab { padding: 0.7rem 1.1rem; font-size: 0.85rem; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; color: #6b7280; background: none; border-top: none; border-left: none; border-right: none; }
+    .tab.active { color: #1a1a2e; border-bottom-color: #1a1a2e; }
+    .tab .badge { display: inline-block; background: #f1f5f9; color: #64748b; font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 10px; margin-left: 0.3rem; font-weight: 600; }
+    .tab.active .badge { background: #1a1a2e; color: white; }
+    .toolbar { background: white; border-bottom: 1px solid #f1f5f9; padding: 0.5rem 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+    .toolbar span { font-size: 0.8rem; color: #888; }
+    .sort-btn { border: 1px solid #e5e7eb; background: white; color: #374151; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.78rem; cursor: pointer; }
+    .sort-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+    .container { max-width: 860px; margin: 1.25rem auto; padding: 0 1rem; }
+    .section-header { font-size: 0.85rem; color: #888; margin-bottom: 0.85rem; }
+    .card { background: white; border-radius: 10px; padding: 1.1rem 1.4rem; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+    .address { font-weight: 600; font-size: 0.97rem; padding-right: 2rem; }
+    .meta { font-size: 0.82rem; color: #777; margin-top: 0.2rem; }
+    .right { text-align: right; flex-shrink: 0; }
+    .price { font-size: 1.15rem; font-weight: 700; color: #16a34a; }
+    .badge-age { display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 0.18rem 0.5rem; border-radius: 4px; margin-top: 0.25rem; }
+    .today { background: #dcfce7; color: #166534; }
+    .yesterday { background: #fef9c3; color: #854d0e; }
+    .older { background: #f1f5f9; color: #64748b; }
+    .divider { border: none; border-top: 1px solid #f1f5f9; margin: 0.75rem 0; }
+    .info-row { display: flex; gap: 0.5rem; align-items: flex-start; margin-top: 0.45rem; font-size: 0.82rem; }
+    .info-label { font-weight: 600; color: #374151; flex-shrink: 0; width: 90px; }
+    .info-text { color: #555; line-height: 1.45; }
+    .no-info { color: #ccc; font-style: italic; }
+    .actions { display: flex; gap: 0.5rem; margin-top: 0.85rem; flex-wrap: wrap; align-items: center; }
+    .btn { display: inline-flex; align-items: center; gap: 0.3rem; text-decoration: none; padding: 0.38rem 0.8rem; border-radius: 6px; font-size: 0.78rem; font-weight: 500; border: none; cursor: pointer; }
+    .btn-zillow { background: #1a1a2e; color: white; }
+    .btn-maps { background: #fff; color: #374151; border: 1px solid #d1d5db; }
+    .btn:hover { opacity: 0.82; }
+    .fav-btn { background: none; border: none; cursor: pointer; font-size: 1.3rem; line-height: 1; padding: 0.1rem; color: #d1d5db; transition: color .15s, transform .1s; margin-left: auto; }
+    .fav-btn:hover { transform: scale(1.2); }
+    .fav-btn.saved { color: #f59e0b; }
+    .empty { text-align: center; padding: 2.5rem; color: #aaa; background: white; border-radius: 10px; font-size: 0.88rem; line-height: 1.6; }
+    .saved-badge { display: inline-block; background: #fef9c3; color: #92400e; font-size: 0.68rem; font-weight: 600; padding: 0.15rem 0.45rem; border-radius: 4px; margin-left: 0.4rem; vertical-align: middle; }
+    .token-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+    .token-modal.show { display: flex; }
+    .token-box { background: white; border-radius: 12px; padding: 1.5rem; max-width: 420px; width: 90%; }
+    .token-box h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+    .token-box p { font-size: 0.82rem; color: #666; margin-bottom: 1rem; line-height: 1.5; }
+    .token-box input { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.85rem; margin-bottom: 0.75rem; font-family: monospace; }
+    .token-box-btns { display: flex; gap: 0.5rem; justify-content: flex-end; }
+    .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: #1a1a2e; color: white; padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.82rem; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 200; }
+    .toast.show { opacity: 1; }
+  </style>
 </head>
 <body>
-
-<header>
-  <h1>SF Rentals &mdash; Fresh Listings</h1>
-  <div class="timestamp">Last updated: 2026-04-08T14:27:11.799101+00:00 UTC</div>
-  <div class="filter-summary">1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA</div>
-</header>
-
-<main>
-  <div class="results-count">0 listing(s) found</div>
-
-  <div class="grid" id="listings-grid">
-
-    <!-- EMPTY STATE -->
-    <div class="empty-state" style="grid-column: 1 / -1;">
-      <div class="icon">&#127968;</div>
-      <h2>No listings found right now</h2>
-      <p>No SF rentals matched all filters (1+ bed, $3,000&ndash;$4,000/mo, listed within 24 hrs, excluding Nob Hill, Tenderloin, Mission, SOMA) at the time of the last fetch. Check back soon &mdash; new listings are typically added throughout the day.</p>
+  <header>
+    <div>
+      <h1>SF Rentals &mdash; Fresh Listings</h1>
+      <p>Updated: April 08, 2026 at 14:59 UTC</p>
     </div>
+  </header>
+  <div class="criteria">1 bed min &nbsp;&middot;&nbsp; $3,000&ndash;$4,000/mo &nbsp;&middot;&nbsp; Listed in last 24h &nbsp;&middot;&nbsp; Individual listings only &nbsp;&middot;&nbsp; No Nob Hill / Tenderloin / Mission / SOMA</div>
 
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('fresh',this)">Fresh Listings <span class="badge" id="fresh-count">0</span></button>
+    <button class="tab" onclick="showTab('saved',this)">Saved <span class="badge" id="saved-count">0</span></button>
   </div>
-</main>
 
+  <div id="tab-fresh">
+    <div class="toolbar">
+      <span>Sort:</span>
+      <button class="sort-btn active" onclick="sortBy('recent',this)">Recently Listed</button>
+      <button class="sort-btn" onclick="sortBy('best',this)">Best Match</button>
+      <button class="sort-btn" onclick="sortBy('price',this)">Price &uarr;</button>
+    </div>
+    <div class="container">
+      <div id="fresh-cards"></div>
+    </div>
+  </div>
+
+  <div id="tab-saved" style="display:none">
+    <div class="container" style="margin-top:1.25rem">
+      <div id="saved-cards"></div>
+    </div>
+  </div>
+
+  <div class="token-modal" id="tokenModal">
+    <div class="token-box">
+      <h3>One-time setup: enter your GitHub token</h3>
+      <p>Needed to save favorites. Requires <code>repo</code> scope on <strong>richinroygeorge/rich</strong>. Stored in this browser only &mdash; you won't be asked again on this device.</p>
+      <input type="password" id="tokenInput" placeholder="ghp_..." />
+      <div class="token-box-btns">
+        <button class="btn btn-maps" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-zillow" onclick="submitToken()">Save &amp; Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const FRESH = [];
+    const REPO = "richinroygeorge/rich";
+
+    // In-memory favorites map: uid -> card object
+    let favMap = {};
+    let pendingFavUid = null;
+
+    function getToken() { return localStorage.getItem('gh_token'); }
+
+    // Fetch favorites in background — cards render immediately, stars update after
+    async function loadFavorites() {
+      try {
+        const headers = { 'Accept': 'application/vnd.github.v3+json' };
+        const tok = getToken();
+        if (tok) headers['Authorization'] = `token ${tok}`;
+        const resp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, { headers });
+        const meta = await resp.json();
+        cachedSha = meta.sha; // Cache SHA so first save skips an extra GET
+        const data = JSON.parse(atob(meta.content.replace(/\n/g, '')));
+        favMap = {};
+        data.forEach(s => { if (s.uid) favMap[s.uid] = s; });
+        refreshCardButtons();
+        updateSavedBadge();
+      } catch(e) {
+        // favorites unavailable — cards already shown, stars stay grey
+      }
+    }
+
+    function showTab(tab, btn) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-fresh').style.display = tab === 'fresh' ? '' : 'none';
+      document.getElementById('tab-saved').style.display = tab === 'saved' ? '' : 'none';
+      if (tab === 'saved') renderSaved();
+    }
+
+    function sortBy(mode, btn) {
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderFresh(mode);
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function cardHTML(p, inSavedTab) {
+      const isSaved = !!favMap[p.uid];
+      const favCls = isSaved ? 'saved' : '';
+      const favTitle = isSaved ? 'Remove from saved' : 'Save listing';
+      const listedRow = p.listed_text
+        ? `<div class="info-row"><span class="info-label">Listed</span><span class="info-text">${esc(p.listed_text)}</span></div>`
+        : '';
+      const pListing = p.parking_listing
+        ? `<div class="info-row"><span class="info-label">Parking</span><span class="info-text">${esc(p.parking_listing)}</span></div>`
+        : `<div class="info-row"><span class="info-label">Parking</span><span class="info-text no-info">Not mentioned in listing</span></div>`;
+      const pCtx = p.parking_context
+        ? `<div class="info-row"><span class="info-label">Neighborhood</span><span class="info-text">${esc(p.parking_context)}</span></div>`
+        : '';
+      const laundry = p.laundry
+        ? `<div class="info-row"><span class="info-label">Laundry</span><span class="info-text">${esc(p.laundry)}</span></div>`
+        : `<div class="info-row"><span class="info-label">Laundry</span><span class="info-text no-info">Not mentioned in listing</span></div>`;
+      const zBtn = p.zillow_url
+        ? `<a href="${esc(p.zillow_url)}" target="_blank" class="btn btn-zillow">View on Zillow</a>`
+        : '';
+      const mBtn = `<a href="${esc(p.maps_url)}" target="_blank" class="btn btn-maps"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>Maps</a>`;
+      const savedLabel = inSavedTab && !FRESH.find(f => f.uid === p.uid) ? '<span class="saved-badge">Saved</span>' : '';
+      return `<div class="card" id="card-${esc(p.uid)}">
+  <div class="card-top">
+    <div><div class="address">${esc(p.address)}${savedLabel}</div><div class="meta">${esc(String(p.beds))} bed &middot; ${esc(String(p.baths))} bath${p.sqft_str}</div></div>
+    <div class="right"><div class="price">${esc(p.price_str)}</div><span class="badge-age ${p.days_cls}">${esc(p.days_text)}</span></div>
+  </div>
+  <hr class="divider">
+  ${listedRow}${pListing}${pCtx}${laundry}
+  <div class="actions">${zBtn}${mBtn}<button class="fav-btn ${favCls}" onclick="toggleFav('${esc(p.uid)}')" title="${favTitle}">&#9733;</button></div>
+</div>`;
+    }
+
+    function renderFresh(mode) {
+      mode = mode || 'recent';
+      const sorted = [...FRESH];
+      if (mode === 'recent') sorted.sort((a,b) => a.days - b.days || a.price - b.price);
+      else if (mode === 'best') sorted.sort((a,b) => a.score - b.score);
+      else sorted.sort((a,b) => a.price - b.price);
+      const el = document.getElementById('fresh-cards');
+      el.innerHTML = sorted.length
+        ? sorted.map(p => cardHTML(p, false)).join('')
+        : '<div class="empty">No listings found right now matching your criteria.<br>Check back soon &mdash; this page refreshes every hour.</div>';
+    }
+
+    function renderSaved() {
+      const all = Object.values(favMap);
+      const el = document.getElementById('saved-cards');
+      if (!all.length) {
+        el.innerHTML = '<div class="empty">No saved listings yet.<br>Click the &#9733; on any listing to save it here permanently.</div>';
+        return;
+      }
+      el.innerHTML = all.map(p => cardHTML(p, true)).join('');
+      document.getElementById('saved-count').textContent = all.length;
+    }
+
+    function updateSavedBadge() {
+      const n = Object.keys(favMap).length;
+      document.getElementById('saved-count').textContent = n;
+    }
+
+    function toggleFav(uid) {
+      const card = FRESH.find(c => c.uid === uid) || favMap[uid];
+      if (!card) return;
+      // Always require token for both add and remove
+      if (!getToken()) {
+        pendingFavUid = uid;
+        document.getElementById('tokenModal').classList.add('show');
+        return;
+      }
+      if (favMap[uid]) {
+        delete favMap[uid];
+      } else {
+        favMap[uid] = card;
+      }
+      refreshCardButtons();
+      updateSavedBadge();
+      persistFavorites();
+    }
+
+    function refreshCardButtons() {
+      document.querySelectorAll('.card').forEach(el => {
+        const uid = el.id.replace('card-','');
+        const btn = el.querySelector('.fav-btn');
+        if (!btn) return;
+        if (favMap[uid]) {
+          btn.classList.add('saved');
+          btn.title = 'Remove from saved';
+        } else {
+          btn.classList.remove('saved');
+          btn.title = 'Save listing';
+        }
+      });
+    }
+
+    function closeModal() {
+      document.getElementById('tokenModal').classList.remove('show');
+      document.getElementById('tokenInput').value = '';
+      pendingFavUid = null;
+    }
+
+    function submitToken() {
+      const tok = document.getElementById('tokenInput').value.trim();
+      if (!tok) return;
+      localStorage.setItem('gh_token', tok);
+      closeModal();
+      if (pendingFavUid) {
+        const card = FRESH.find(c => c.uid === pendingFavUid) || favMap[pendingFavUid];
+        if (card) { favMap[pendingFavUid] = card; }
+        pendingFavUid = null;
+        persistFavorites();
+        refreshCardButtons();
+        updateSavedBadge();
+      }
+    }
+
+    let isSaving = false;
+    let savePending = false;
+    let cachedSha = null;
+
+    async function persistFavorites() {
+      if (isSaving) { savePending = true; return; }
+      isSaving = true;
+      savePending = false;
+      const token = getToken();
+      if (!token) { isSaving = false; return; }
+      const favorites = Object.values(favMap);
+      try {
+        // Only fetch SHA if we don't have it cached from loadFavorites or last PUT
+        if (!cachedSha) {
+          const metaResp = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+            cache: 'no-store'
+          });
+          const metaJson = await metaResp.json();
+          cachedSha = metaJson.sha;
+        }
+        const json = JSON.stringify(favorites, null, 2);
+        const bytes = new TextEncoder().encode(json);
+        const b64 = btoa(String.fromCharCode(...bytes));
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/favorites.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'Update favorites', content: b64, sha: cachedSha })
+        });
+        if (res.ok) {
+          const result = await res.json();
+          cachedSha = result.content.sha; // Always use the SHA from the response for next save
+          showToast(favorites.length ? 'Saved!' : 'Removed from saved');
+        } else {
+          cachedSha = null; // Force fresh SHA fetch on next attempt
+          const err = await res.json();
+          showToast('Error saving: ' + (err.message || res.status));
+        }
+      } catch(e) {
+        cachedSha = null;
+        showToast('Network error — check your token');
+      }
+      isSaving = false;
+      if (savePending) persistFavorites();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // Init — render cards immediately, then load favorites in background
+    renderFresh('recent');
+    updateSavedBadge();
+    loadFavorites();
+  </script>
 </body>
 </html>
