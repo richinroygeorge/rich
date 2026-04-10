@@ -6,40 +6,293 @@
 <title>SF Rentals - Fresh Listings</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; color: #333; }
-  header { background: #1a1a2e; color: #fff; padding: 2rem 1.5rem; }
-  header h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
-  header .meta { margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.75; }
-  header .filters { margin-top: 0.75rem; font-size: 0.8rem; background: rgba(255,255,255,0.1); display: inline-block; padding: 0.4rem 0.8rem; border-radius: 20px; }
-  main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
-  .card { background: #fff; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); overflow: hidden; display: flex; flex-direction: column; }
-  .card-header { padding: 1rem 1rem 0.5rem; position: relative; }
-  .badge { font-size: 0.7rem; font-weight: 700; color: #fff; padding: 0.2rem 0.6rem; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .address { font-size: 0.95rem; font-weight: 700; margin-top: 0.5rem; line-height: 1.3; }
-  .zip { font-size: 0.78rem; color: #888; margin-top: 0.15rem; }
-  .card-body { padding: 0.75rem 1rem; flex: 1; }
-  .price { font-size: 1.5rem; font-weight: 800; color: #27ae60; margin-bottom: 0.5rem; }
-  .stats { display: flex; gap: 0.75rem; font-size: 0.82rem; color: #555; flex-wrap: wrap; }
-  .parking { font-size: 0.8rem; color: #444; margin-top: 0.5rem; }
-  .tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.6rem; }
-  .tag { background: #eef2ff; color: #3b4fd4; font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: 12px; }
-  .card-footer { padding: 0.75rem 1rem 1rem; }
-  .btn { display: block; text-align: center; background: #1a1a2e; color: #fff; text-decoration: none; padding: 0.6rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; transition: background 0.2s; }
-  .btn:hover { background: #2d2d5e; }
-  .empty { text-align: center; padding: 4rem 2rem; background: #fff; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); color: #666; font-size: 1rem; }
+
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f5;
+    color: #222;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 24px 32px;
+  }
+
+  header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .header-meta {
+    font-size: 0.8rem;
+    color: #a0a8c0;
+    margin-bottom: 10px;
+  }
+
+  .filter-summary {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.78rem;
+    color: #c8d0e8;
+    letter-spacing: 0.2px;
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 16px;
+  }
+
+  .results-count {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    header { padding: 18px 16px; }
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+  }
+
+  .card-body {
+    padding: 18px 18px 14px;
+    flex: 1;
+  }
+
+  .card-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .address {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #1a1a2e;
+  }
+
+  .badge {
+    flex-shrink: 0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .badge-today {
+    background: #e6f9f0;
+    color: #1a7a4a;
+    border: 1px solid #b2e8d0;
+  }
+
+  .badge-yesterday {
+    background: #fff4e5;
+    color: #a05f00;
+    border: 1px solid #ffd699;
+  }
+
+  .zipcode {
+    font-size: 0.78rem;
+    color: #888;
+    margin-bottom: 10px;
+  }
+
+  .price {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #1a8a3a;
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+
+  .price span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+  }
+
+  .specs {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: #444;
+    margin-bottom: 12px;
+  }
+
+  .spec-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .spec-icon {
+    font-size: 0.9em;
+    opacity: 0.7;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+
+  .amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .amenity-tag {
+    background: #f0f2f8;
+    color: #3a4a6e;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.74rem;
+    font-weight: 500;
+  }
+
+  .parking-info {
+    font-size: 0.8rem;
+    color: #555;
+    background: #fafbfc;
+    border-left: 3px solid #1a1a2e;
+    padding: 5px 10px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+
+  .card-footer {
+    padding: 0 18px 16px;
+  }
+
+  .btn-zillow {
+    display: block;
+    width: 100%;
+    background: #1a1a2e;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: background 0.15s;
+  }
+
+  .btn-zillow:hover {
+    background: #2e2e50;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    color: #888;
+  }
+
+  .empty-state .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  .empty-state h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  .empty-state p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .error-note {
+    background: #fff5f5;
+    border: 1px solid #fcc;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.82rem;
+    color: #c0392b;
+    margin-top: 12px;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 </style>
 </head>
 <body>
+
 <header>
-  <h1>SF Rentals - Fresh Listings</h1>
-  <p class="meta">Last updated: 2026-04-10T07:32:48.667330+00:00 UTC</p>
-  <p class="filters">1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA</p>
+  <h1>SF Rentals &mdash; Fresh Listings</h1>
+  <div class="header-meta">Updated: 2026-04-10T08:08:03.695401+00:00 UTC</div>
+  <div class="filter-summary">1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA</div>
 </header>
+
 <main>
-  <div class="empty"><p>No listings matched your criteria at this time. Check back soon.</p></div>
+  <div class="results-count">0 listings matched your criteria</div>
+
+
+    <div class="empty-state">
+      <div class="empty-icon">&#x1F3E0;</div>
+      <h2>No listings found</h2>
+      <p>No SF rentals matched all filters (1+ bed, $3,000&ndash;$4,000/mo, listed within 24 hours, excluding Nob Hill, Tenderloin, Mission, and SOMA) at this time.</p>
+      <div class="error-note">
+        <strong>Data fetch error:</strong> All Zillow API requests failed due to a proxy restriction in this environment
+        (<code>ProxyError: Tunnel connection failed: 403 Forbidden</code>).
+        The page will show live listings once internet access is available.
+      </div>
+    </div>
+
+
 </main>
+
 </body>
 </html>
