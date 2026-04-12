@@ -1,306 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SF Rentals - Fresh Listings</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF Rentals - Fresh Listings</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f0f2f5;
-      color: #222;
-      min-height: 100vh;
-    }
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    color: #222;
+    min-height: 100vh;
+  }
 
-    header {
-      background: #1a1a2e;
-      color: #fff;
-      padding: 24px 32px;
-    }
+  header {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 24px 32px;
+  }
 
-    header h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
-    }
+  header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
 
-    header .timestamp {
-      font-size: 0.8rem;
-      color: #a0a8c0;
-      margin-bottom: 10px;
-    }
+  header .timestamp {
+    font-size: 0.8rem;
+    color: #a0a0c0;
+    margin-top: 4px;
+  }
 
-    .filter-summary {
-      display: inline-block;
-      background: rgba(255,255,255,0.1);
-      border-radius: 6px;
-      padding: 6px 14px;
-      font-size: 0.82rem;
-      color: #cbd2e8;
-      letter-spacing: 0.01em;
-    }
+  .filter-bar {
+    background: #16213e;
+    color: #c8c8e8;
+    padding: 10px 32px;
+    font-size: 0.85rem;
+    letter-spacing: 0.2px;
+  }
 
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 32px 20px;
-    }
+  .filter-bar span {
+    opacity: 0.85;
+  }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
+  main {
+    max-width: 1200px;
+    margin: 32px auto;
+    padding: 0 16px;
+  }
 
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-    }
+  .results-count {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
 
-    @media (max-width: 580px) {
-      .grid { grid-template-columns: 1fr; }
-      header { padding: 18px 16px; }
-      header h1 { font-size: 1.4rem; }
-      main { padding: 20px 12px; }
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
 
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.09), 0 1px 3px rgba(0,0,0,0.06);
-      padding: 22px 20px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
 
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.13), 0 2px 6px rgba(0,0,0,0.07);
-    }
+  @media (max-width: 580px) {
+    .grid { grid-template-columns: 1fr; }
+    header { padding: 18px 16px; }
+    .filter-bar { padding: 10px 16px; }
+  }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-    }
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
 
-    .address {
-      font-weight: 700;
-      font-size: 1rem;
-      line-height: 1.35;
-      color: #1a1a2e;
-    }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.13);
+  }
 
-    .zipcode {
-      font-size: 0.78rem;
-      color: #666;
-      margin-top: 2px;
-    }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
 
-    .badge {
-      flex-shrink: 0;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
+  .address {
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.3;
+    color: #1a1a2e;
+  }
 
-    .badge-today {
-      background: #d4edda;
-      color: #1a6832;
-    }
+  .badge {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-    .badge-yesterday {
-      background: #fff3cd;
-      color: #856404;
-    }
+  .badge-today {
+    background: #d1fae5;
+    color: #065f46;
+  }
 
-    .price {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: #1e8a3c;
-      line-height: 1;
-    }
+  .badge-yesterday {
+    background: #fef3c7;
+    color: #92400e;
+  }
 
-    .details-row {
-      display: flex;
-      gap: 14px;
-      font-size: 0.85rem;
-      color: #444;
-      flex-wrap: wrap;
-    }
+  .zipcode {
+    font-size: 0.8rem;
+    color: #888;
+  }
 
-    .details-row span {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+  .price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #16a34a;
+  }
 
-    .amenities {
-      font-size: 0.8rem;
-      color: #555;
-      line-height: 1.5;
-    }
+  .specs {
+    display: flex;
+    gap: 14px;
+    font-size: 0.82rem;
+    color: #555;
+    flex-wrap: wrap;
+  }
 
-    .amenities-label {
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 2px;
-    }
+  .specs span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
 
-    .parking {
-      font-size: 0.8rem;
-      background: #eef4ff;
-      border-left: 3px solid #4a7fd4;
-      padding: 5px 10px;
-      border-radius: 0 6px 6px 0;
-      color: #2a4a8a;
-    }
+  .amenities {
+    font-size: 0.8rem;
+    color: #444;
+    background: #f7f8fa;
+    border-radius: 6px;
+    padding: 8px 10px;
+    line-height: 1.5;
+  }
 
-    .card-footer {
-      margin-top: auto;
-      padding-top: 4px;
-    }
+  .parking {
+    font-size: 0.8rem;
+    color: #555;
+    font-style: italic;
+  }
 
-    .btn-zillow {
-      display: inline-block;
-      width: 100%;
-      text-align: center;
-      background: #1a1a2e;
-      color: #fff;
-      padding: 10px 0;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 0.88rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      transition: background 0.15s ease;
-    }
+  .view-btn {
+    display: inline-block;
+    margin-top: auto;
+    background: #1a1a2e;
+    color: #fff;
+    text-decoration: none;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    transition: background 0.15s;
+  }
 
-    .btn-zillow:hover {
-      background: #2d2d50;
-    }
+  .view-btn:hover {
+    background: #16213e;
+  }
 
-    .empty-state {
-      text-align: center;
-      padding: 80px 20px;
-      color: #777;
-    }
+  .empty-state {
+    text-align: center;
+    padding: 64px 20px;
+    color: #888;
+  }
 
-    .empty-state .icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      opacity: 0.4;
-    }
+  .empty-state h2 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #555;
+  }
 
-    .empty-state h2 {
-      font-size: 1.3rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #444;
-    }
+  .empty-state p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
 
-    .empty-state p {
-      font-size: 0.92rem;
-      max-width: 380px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
 
-    .count-bar {
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-      color: #555;
-    }
-
-    .count-bar strong {
-      color: #1a1a2e;
-    }
-  </style>
+  .error-notice {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: #856404;
+    margin-bottom: 20px;
+  }
+</style>
 </head>
 <body>
 
 <header>
-  <h1>SF Rentals &mdash; Fresh Listings</h1>
-  <div class="timestamp">Last updated: 2026-04-12T14:27:02.624698+00:00 UTC</div>
-  <div class="filter-summary">1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA</div>
+  <h1>SF Rentals - Fresh Listings</h1>
+  <div class="timestamp">Updated: 2026-04-12T15:24:31.289265+00:00 UTC</div>
 </header>
 
+<div class="filter-bar">
+  <span>1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA</span>
+</div>
+
 <main>
-  <div class="count-bar">
-    <strong>0 listings</strong> matched your filters
+  <div class="error-notice">
+    <strong>Data fetch error:</strong> The Zillow Scraper API (<code>zillow-scraper-api.p.rapidapi.com</code>) is not reachable from this environment — the egress proxy returned <code>403 Forbidden</code> for all 8 pages. No listing data could be retrieved at this time.
   </div>
 
-  <div class="grid" id="listings-grid">
-    <!-- Cards rendered below if listings exist -->
-  </div>
+  <div class="results-count">0 listings found</div>
 
-  <div class="empty-state" id="empty-state">
-    <div class="icon">&#127968;</div>
-    <h2>No listings found right now</h2>
-    <p>No qualifying rentals matched all filters (1+ bed, $3,000&ndash;$4,000/mo, listed in the last 24 hours, excluding Nob Hill, Tenderloin, Mission &amp; SOMA). Check back soon &mdash; listings refresh frequently.</p>
-  </div>
+
+    <div class="empty-state">
+      <div class="empty-icon">&#127968;</div>
+      <h2>No listings available right now</h2>
+      <p>No qualifying SF rentals matched your filters (1+ bed, $3,000&ndash;$4,000/mo, listed in last 24 hours,<br>excluding Nob Hill, Tenderloin, Mission, and SOMA).<br>Check back soon — the page auto-refreshes when new listings appear.</p>
+    </div>
+
 </main>
 
-<script>
-  const listings = [];
-
-  const grid = document.getElementById('listings-grid');
-  const emptyState = document.getElementById('empty-state');
-
-  if (listings.length === 0) {
-    emptyState.style.display = 'block';
-    grid.style.display = 'none';
-  } else {
-    emptyState.style.display = 'none';
-    listings.forEach(l => {
-      const days = l.days_on_zillow;
-      const badgeClass = days === 0 ? 'badge-today' : 'badge-yesterday';
-      const badgeText = days === 0 ? 'Today' : 'Yesterday';
-
-      const beds = l.bedrooms != null ? `${l.bedrooms} bd` : '';
-      const baths = l.bathrooms != null ? `${l.bathrooms} ba` : '';
-      const sqft = l.living_area != null ? `${l.living_area.toLocaleString()} sqft` : '';
-
-      const desc = (l.details && l.details.description) || (l.description || '');
-      const parkingMatch = desc.match(/parking[^.!?\n]{0,80}/i);
-      const parkingInfo = parkingMatch ? parkingMatch[0].trim() : null;
-
-      const amenities = (l.details && l.details.amenities) ? l.details.amenities.slice(0, 6).join(', ') : '';
-      const zillowUrl = l.detail_url || `https://www.zillow.com/homedetails/${l.zpid}_zpid/`;
-      const zip = l.zipcode ? `ZIP ${l.zipcode}` : '';
-
-      const card = `
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="address">${l.address || 'Address unavailable'}</div>
-              ${zip ? `<div class="zipcode">${zip}</div>` : ''}
-            </div>
-            <span class="badge ${badgeClass}">${badgeText}</span>
-          </div>
-          <div class="price">$${(l.price || 0).toLocaleString()}<span style="font-size:1rem;font-weight:500;color:#555">/mo</span></div>
-          <div class="details-row">
-            ${beds ? `<span>&#127968; ${beds}</span>` : ''}
-            ${baths ? `<span>&#128703; ${baths}</span>` : ''}
-            ${sqft ? `<span>&#9633; ${sqft}</span>` : ''}
-          </div>
-          ${parkingInfo ? `<div class="parking">&#128663; ${parkingInfo}</div>` : ''}
-          ${amenities ? `<div class="amenities"><div class="amenities-label">Amenities</div>${amenities}</div>` : ''}
-          <div class="card-footer">
-            <a class="btn-zillow" href="${zillowUrl}" target="_blank" rel="noopener">View on Zillow &rarr;</a>
-          </div>
-        </div>`;
-      grid.insertAdjacentHTML('beforeend', card);
-    });
-  }
-</script>
 </body>
 </html>
