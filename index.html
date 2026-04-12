@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SF Rentals - Fresh Listings</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #f0f2f5;
-      color: #222;
+      color: #333;
       min-height: 100vh;
     }
 
@@ -23,31 +23,27 @@
     header h1 {
       font-size: 1.75rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.5px;
     }
 
     header .timestamp {
-      font-size: 0.8rem;
-      color: #a0a8c8;
+      font-size: 0.82rem;
+      color: #a0aec0;
       margin-top: 4px;
     }
 
     .filter-bar {
       background: #16213e;
-      color: #c8cfe8;
+      color: #90cdf4;
       padding: 10px 32px;
       font-size: 0.85rem;
-      letter-spacing: 0.01em;
-    }
-
-    .filter-bar span {
-      opacity: 0.85;
+      letter-spacing: 0.2px;
     }
 
     main {
-      max-width: 1200px;
-      margin: 32px auto;
-      padding: 0 16px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 20px;
     }
 
     .grid {
@@ -64,21 +60,30 @@
       .grid { grid-template-columns: 1fr; }
       header { padding: 18px 16px; }
       .filter-bar { padding: 10px 16px; }
+      main { padding: 20px 12px; }
     }
 
     .card {
       background: #fff;
       border-radius: 12px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.09);
-      padding: 20px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      transition: box-shadow 0.2s;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
 
     .card:hover {
+      transform: translateY(-3px);
       box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+    }
+
+    .card-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .card-header {
@@ -90,120 +95,105 @@
 
     .address {
       font-weight: 700;
-      font-size: 0.97rem;
-      line-height: 1.3;
+      font-size: 1rem;
+      line-height: 1.35;
       color: #1a1a2e;
     }
 
     .zipcode {
-      font-size: 0.78rem;
-      color: #666;
+      font-size: 0.8rem;
+      color: #718096;
       margin-top: 2px;
     }
 
     .badge {
       font-size: 0.72rem;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 20px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 99px;
       white-space: nowrap;
       flex-shrink: 0;
     }
 
-    .badge-today {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .badge-yesterday {
-      background: #fff3cd;
-      color: #856404;
-    }
+    .badge-today { background: #c6f6d5; color: #276749; }
+    .badge-yesterday { background: #fefcbf; color: #744210; }
 
     .price {
       font-size: 1.6rem;
       font-weight: 800;
-      color: #1a7a4a;
+      color: #22863a;
+      line-height: 1;
     }
 
-    .details {
+    .meta {
       display: flex;
       gap: 14px;
-      font-size: 0.83rem;
-      color: #555;
       flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: #4a5568;
     }
 
-    .details span {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .meta span { display: flex; align-items: center; gap: 4px; }
 
     .section-label {
       font-size: 0.75rem;
       font-weight: 600;
-      color: #999;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.5px;
+      color: #a0aec0;
     }
 
     .amenities {
       font-size: 0.82rem;
-      color: #444;
+      color: #4a5568;
       line-height: 1.5;
     }
 
     .parking {
       font-size: 0.82rem;
-      color: #444;
+      color: #553c9a;
+      font-weight: 600;
     }
 
-    .view-btn {
-      display: inline-block;
-      margin-top: 4px;
+    .card-footer {
+      padding: 14px 20px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .btn-zillow {
+      display: block;
+      width: 100%;
+      padding: 10px;
       background: #1a1a2e;
       color: #fff;
-      text-decoration: none;
-      padding: 9px 16px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
       text-align: center;
-      transition: background 0.2s;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background 0.15s;
     }
 
-    .view-btn:hover {
-      background: #2d2d5e;
-    }
+    .btn-zillow:hover { background: #2d2d5e; }
 
     .empty-state {
       text-align: center;
       padding: 80px 20px;
-      color: #666;
+      color: #718096;
     }
 
     .empty-state h2 {
       font-size: 1.4rem;
       margin-bottom: 10px;
-      color: #333;
+      color: #4a5568;
     }
 
-    .empty-state p {
-      font-size: 0.95rem;
-      max-width: 480px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
+    .empty-state p { font-size: 0.95rem; line-height: 1.6; }
 
     .results-count {
       font-size: 0.9rem;
-      color: #666;
+      color: #718096;
       margin-bottom: 20px;
-    }
-
-    .results-count strong {
-      color: #1a1a2e;
     }
   </style>
 </head>
@@ -211,11 +201,11 @@
 
 <header>
   <h1>SF Rentals &mdash; Fresh Listings</h1>
-  <div class="timestamp">Last updated: 2026-04-12T01:04:49.891038+00:00 UTC</div>
+  <div class="timestamp">Updated: 2026-04-12T04:16:02Z UTC</div>
 </header>
 
 <div class="filter-bar">
-  <span>1+ bed &middot; $3,000&ndash;$4,000/mo &middot; Listed in last 24hrs &middot; Excl. Nob Hill, Tenderloin, Mission, SOMA</span>
+  1+ bed &nbsp;&middot;&nbsp; $3,000&ndash;$4,000/mo &nbsp;&middot;&nbsp; Listed in last 24hrs &nbsp;&middot;&nbsp; Excl. Nob Hill, Tenderloin, Mission, SOMA
 </div>
 
 <main>
@@ -223,7 +213,12 @@
 
   <div class="empty-state">
     <h2>No listings found right now</h2>
-    <p>No SF rentals matched your criteria (1+ bed, $3,000&ndash;$4,000/mo, listed within 24 hours, excluding Nob Hill, Tenderloin, Mission, and SOMA) at the time of this update. Check back soon &mdash; fresh listings are fetched regularly.</p>
+    <p>
+      No SF rentals matched all filters (1+ bed, $3,000&ndash;$4,000/mo, listed within 24 hrs,<br>
+      excluding Nob Hill, Tenderloin, Mission, SOMA) at the time of this update.<br><br>
+      <strong>Note:</strong> This run encountered a network proxy error preventing API access.<br>
+      Check back after resolving connectivity or re-run the aggregator.
+    </p>
   </div>
 
 
